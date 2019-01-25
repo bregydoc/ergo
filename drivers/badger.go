@@ -1,8 +1,9 @@
 package drivers
 
 import (
-	"github.com/bregydoc/ergo"
+	"github.com/bregydoc/ergo/schema"
 	"github.com/dgraph-io/badger"
+	"github.com/gogo/protobuf/proto"
 	"github.com/oklog/ulid"
 )
 
@@ -10,28 +11,60 @@ type BadgerBag struct {
 	db *badger.DB
 }
 
-func NewBagerBag() {
+func NewBagerBag(dir, valueDir string, opts ...badger.Options) (*BadgerBag, error) {
 	// db, err := badger.Open(opts)
+	opt := badger.DefaultOptions
+	if len(opts) > 0 {
+		opt = opts[1]
+	}
+	opt.Dir = dir
+	opt.ValueDir = valueDir
+	db, err := badger.Open(opt)
+	if err != nil {
+		return nil, err
+	}
 
+	return &BadgerBag{
+		db: db,
+	}, nil
 }
 
 // GetAllErrors implements Ergo bag
-func (b *BadgerBag) GetAllErrors() ([]*ergo.Error, error) {
+func (b *BadgerBag) GetAllErrors() ([]*schema.Error, error) {
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
+	iterator := txn.NewIterator(badger.IteratorOptions{})
 
-	return []*ergo.Error{}, nil
+	errors := make([]*schema.Error, 0)
+
+	for i := iterator.Item(); iterator.Valid(); iterator.Next() {
+		data, err := i.ValueCopy(nil)
+		if err != nil {
+			return nil, err
+		}
+
+		e := new(schema.Error)
+
+		err = proto.Unmarshal(data, e)
+		if err != nil {
+			return nil, err
+		}
+
+		errors = append(errors, e)
+	}
+
+	return errors, nil
 }
 
 // GetAllErrorsFromCode implements Ergo bag
-func (b *BadgerBag) GetAllErrorsFromCode(code uint64) ([]*ergo.Error, error) {
-
-	return []*ergo.Error{}, nil
+func (b *BadgerBag) GetAllErrorsFromCode(code uint64) ([]*schema.Error, error) {
+	panic("unimplemented")
+	return []*schema.Error{}, nil
 }
 
 // GetErrorByID implements Ergo bag
-func (b *BadgerBag) GetErrorByID(id ulid.ULID) (*ergo.Error, error) {
-	txn := b.db.NewTransaction(true)
+func (b *BadgerBag) GetErrorByID(id ulid.ULID) (*schema.Error, error) {
+	txn := b.db.NewTransaction(false)
 	defer txn.Discard()
 
 	item, err := txn.Get(id[:])
@@ -39,40 +72,71 @@ func (b *BadgerBag) GetErrorByID(id ulid.ULID) (*ergo.Error, error) {
 		return nil, err
 	}
 
-	_, err = item.ValueCopy(nil)
-
-	// TODO: Encode data to ergo.Error struct
-
+	data, err := item.ValueCopy(nil)
 	if err != nil {
 		return nil, err
 	}
-	return &ergo.Error{}, nil
+
+	ergoError := new(schema.Error)
+
+	err = proto.Unmarshal(data, ergoError)
+	if err != nil {
+		return nil, err
+	}
+
+	return ergoError, nil
 }
 
 // GetErrorByNativeError implements Ergo bag
-func (b *BadgerBag) GetErrorByNativeError(err error) (*ergo.Error, error) {
-	return &ergo.Error{}, nil
+func (b *BadgerBag) GetErrorByNativeError(errN error) (*schema.Error, error) {
+	panic("unimplemented")
+	return &schema.Error{}, nil
 }
 
 // RegisterNewErrorFromNative implements Ergo bag
-func (b *BadgerBag) RegisterNewErrorFromNative(err error, message ...string) (*ergo.Error, error) {
-	return &ergo.Error{}, nil
+func (b *BadgerBag) RegisterNewErrorFromNative(errN error, message ...string) (*schema.Error, error) {
+	panic("unimplemented")
+	return &schema.Error{}, nil
 }
 
 // RegisterNewError implements Ergo bag
-func (b *BadgerBag) RegisterNewError(err *ergo.Error) (*ergo.Error, error) {
+func (b *BadgerBag) RegisterNewError(ergoError *schema.Error) (*schema.Error, error) {
+	txn := b.db.NewTransaction(true)
+	defer txn.Discard()
 
-	return &ergo.Error{}, nil
+	data, err := proto.Marshal(ergoError)
+	if err != nil {
+		return nil, err
+	}
+
+	err = txn.Set(ergoError.Id, data)
+
+	var id ulid.ULID
+	copy(id[:], ergoError.Id)
+
+	return b.GetErrorByID(id)
 }
 
 // RemoveErrorByID implements Ergo bag
-func (b *BadgerBag) RemoveErrorByID(id ulid.ULID) (*ergo.Error, error) {
+func (b *BadgerBag) RemoveErrorByID(id ulid.ULID) (*schema.Error, error) {
+	txn := b.db.NewTransaction(true)
+	defer txn.Discard()
 
-	return &ergo.Error{}, nil
+	sch, err := b.GetErrorByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = txn.Delete(id[:])
+	if err != nil {
+		return nil, err
+	}
+
+	return sch, nil
 }
 
 // RemoveErrorByNative implements Ergo bag
-func (b *BadgerBag) RemoveErrorByNative(err error) (*ergo.Error, error) {
-
-	return &ergo.Error{}, nil
+func (b *BadgerBag) RemoveErrorByNative(errN error) (*schema.Error, error) {
+	panic("unimplemented")
+	return &schema.Error{}, nil
 }

@@ -1,8 +1,7 @@
 package ergo
 
-import "github.com/oklog/ulid"
+import "github.com/bregydoc/ergo/schema"
 
 type Language struct {
-	ID   ulid.ULID `json:"id"`
-	Name string    `json:"name"`
+	schema.Language
 }

@@ -1,17 +1,20 @@
 package ergo
 
-import "github.com/oklog/ulid"
+import (
+	"github.com/bregydoc/ergo/schema"
+	"github.com/oklog/ulid"
+)
 
 // ErrorsBag is a bag for errors transactions
 type ErrorsBag interface {
-	GetAllErrors() ([]*Error, error)
-	GetAllErrorsFromCode(code uint64) ([]*Error, error)
-	GetErrorByID(id ulid.ULID) (*Error, error)
-	GetErrorByNativeError(err error) (*Error, error)
+	GetAllErrors() ([]*schema.Error, error)
+	GetAllErrorsFromCode(code uint64) ([]*schema.Error, error)
+	GetErrorByID(id ulid.ULID) (*schema.Error, error)
+	GetErrorByNativeError(errN error) (*schema.Error, error)
 
-	RegisterNewErrorFromNative(err error, message ...string) (*Error, error)
-	RegisterNewError(err *Error) (*Error, error)
+	RegisterNewErrorFromNative(errN error, message ...string) (*schema.Error, error)
+	RegisterNewError(ergoError *schema.Error) (*schema.Error, error)
 
-	RemoveErrorByID(id ulid.ULID) (*Error, error)
-	RemoveErrorByNative(err error) (*Error, error)
+	RemoveErrorByID(id ulid.ULID) (*schema.Error, error)
+	RemoveErrorByNative(errN error) (*schema.Error, error)
 }

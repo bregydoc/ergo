@@ -1,5 +1,8 @@
 syntax = "proto3";
+
 package ergo;
+
+option go_package = "cereal";
 
 // type Error struct {
 //	 ID ulid.ULID `json:"id"`

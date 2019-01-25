@@ -5,11 +5,6 @@ import (
 	"github.com/oklog/ulid"
 )
 
-// Error define an error basic struct
-type Error struct {
-	schema.Error
-}
-
 // ErrorsBag is a bag for errors transactions
 type ErrorsBag interface {
 	GetAllErrors() ([]*schema.Error, error)

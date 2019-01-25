@@ -100,7 +100,7 @@ func (b *BadgerBag) RegisterNewErrorFromNative(errN error, message ...string) (*
 }
 
 // RegisterNewError implements Ergo bag
-func (b *BadgerBag) RegisterNewError(ergoError *schema.Error) (*schema.Error, error) {
+func (b *BadgerBag) nRegisterNewError(ergoError *schema.Error) (*schema.Error, error) {
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 

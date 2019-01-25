@@ -6,11 +6,6 @@ import (
 	"golang.org/x/text/language"
 )
 
-// Language is a synthetic type
-type Language struct {
-	schema.Language
-}
-
 // NewLanguageByTag generate a new language from tag
 func NewLanguageByTag(id ulid.ULID, tag language.Tag) (*schema.Language, error) {
 	return &schema.Language{

@@ -4,19 +4,6 @@ package ergo;
 
 option go_package = "schema";
 
-// type Error struct {
-//	 ID ulid.ULID `json:"id"`
-//	 Code uint64 `json:"code"`
-//	 Err error `json:"err"`
-//	 Message string `json:"message"`
-//	 DefaultLanguage *Language `json:"default_language"`
-//	 AvailableLanguages []*Language `json:"available_languages"`
-// }
-
-// type Language struct {
-//	 ID ulid.ULID `json:"id"`
-//	 Name string `json:"name"`
-// }
 
 message Error {
     bytes id = 1;

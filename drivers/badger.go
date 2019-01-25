@@ -117,6 +117,16 @@ func (b *BadgerBag) RegisterNewError(ergoError *schema.Error) (*schema.Error, er
 	return b.GetErrorByID(id)
 }
 
+// UpdateErrorByID implements Ergo bag
+func (b *BadgerBag) UpdateErrorByID(id ulid.ULID, update *schema.Error) (*schema.Error, error) {
+	panic("unimplemented")
+}
+
+// UpdateErrorByNative implements Ergo bag
+func (b *BadgerBag) UpdateErrorByNative(errN error, update *schema.Error) (*schema.Error, error) {
+	panic("unimplemented")
+}
+
 // RemoveErrorByID implements Ergo bag
 func (b *BadgerBag) RemoveErrorByID(id ulid.ULID) (*schema.Error, error) {
 	txn := b.db.NewTransaction(true)

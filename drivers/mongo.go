@@ -31,17 +31,26 @@ func (b *MongoBag) GetErrorByID(id ulid.ULID) (*schema.Error, error) {
 // GetErrorByNativeError implements Ergo bag
 func (b *MongoBag) GetErrorByNativeError(errN error) (*schema.Error, error) {
 	panic("unimplemented")
-	return &schema.Error{}, nil
 }
 
 // RegisterNewErrorFromNative implements Ergo bag
 func (b *MongoBag) RegisterNewErrorFromNative(errN error, message ...string) (*schema.Error, error) {
 	panic("unimplemented")
-	return &schema.Error{}, nil
+
 }
 
 // RegisterNewError implements Ergo bag
 func (b *MongoBag) RegisterNewError(ergoError *schema.Error) (*schema.Error, error) {
+	panic("unimplemented")
+}
+
+// UpdateErrorByID implements Ergo bag
+func (b *MongoBag) UpdateErrorByID(id ulid.ULID, update *schema.Error) (*schema.Error, error) {
+	panic("unimplemented")
+}
+
+// UpdateErrorByNative implements Ergo bag
+func (b *MongoBag) UpdateErrorByNative(errN error, update *schema.Error) (*schema.Error, error) {
 	panic("unimplemented")
 }
 

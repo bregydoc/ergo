@@ -16,5 +16,5 @@ type Service interface {
 
 	GetErrorByID(id ulid.ULID) (*schema.Error, error)
 	GetErrorMessageByLanguage(errorID ulid.ULID, lang language.Tag, withDefault ...bool) (string, error)
-	GetDefaultErrorMessage(errorID ulid.ULID) (string, error)
+	GetDefaultErrorMessage(errorID ulid.ULID, defaultMessage ...string) (string, error)
 }

@@ -9,11 +9,12 @@ import (
 )
 
 type ServerClient struct {
-	ergoService Service
-	engine      *gin.Engine
+	ergo   Service
+	engine *gin.Engine
 }
 
 type ServerClientOptions struct {
+	// TODO: Add custom options
 }
 
 func (client *ServerClient) RegisterRoutes(opts ...ServerClientOptions) {
@@ -22,7 +23,6 @@ func (client *ServerClient) RegisterRoutes(opts ...ServerClientOptions) {
 		lang := c.Query("lang")
 
 		errorID, err := ulid.Parse(id)
-
 		switch err {
 		case nil:
 			break
@@ -34,7 +34,7 @@ func (client *ServerClient) RegisterRoutes(opts ...ServerClientOptions) {
 			return
 		}
 
-		ergoError, err := client.ergoService.GetErrorByID(errorID)
+		ergoError, err := client.ergo.GetErrorByID(errorID)
 		switch err {
 		case nil:
 			break
@@ -55,7 +55,7 @@ func (client *ServerClient) RegisterRoutes(opts ...ServerClientOptions) {
 			}
 		}
 
-		msg, err := client.ergoService.GetErrorMessageByLanguage(errorID, ergoErrorLang, true)
+		msg, err := client.ergo.GetErrorMessageByLanguage(errorID, ergoErrorLang, true)
 		if err != nil {
 			c.String(http.StatusOK, "[ERGO ERROR] "+err.Error())
 			return

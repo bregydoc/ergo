@@ -63,3 +63,28 @@ func (b *MongoBag) RemoveErrorByID(id ulid.ULID) (*schema.Error, error) {
 func (b *MongoBag) RemoveErrorByNative(errN error) (*schema.Error, error) {
 	panic("unimplemented")
 }
+
+// RegisterNewLang implements Ergo bag
+func (b *MongoBag) RegisterNewLang(language *schema.Language) (*schema.Language, error) {
+	panic("unimplemented")
+}
+
+// AddNewLangToError implements Ergo bag
+func (b *MongoBag) AddNewLangToError(errorID ulid.ULID, language *schema.Language, message string) (*schema.Language, error) {
+	panic("unimplemented")
+}
+
+// GetLanguageByID implements Ergo bag
+func (b *MongoBag) GetLanguageByID(id ulid.ULID) (*schema.Language, error) {
+	panic("unimplemented")
+}
+
+// UpdateLanguageByID implements Ergo bag
+func (b *MongoBag) UpdateLanguageByID(id ulid.ULID, update *schema.Language) (*schema.Language, error) {
+	panic("unimplemented")
+}
+
+// RemoveLanguageByID implements Ergo bag
+func (b *MongoBag) RemoveLanguageByID(id ulid.ULID) (*schema.Language, error) {
+	panic("unimplemented")
+}

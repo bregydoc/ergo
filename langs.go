@@ -14,11 +14,3 @@ func NewLanguageByTag(id ulid.ULID, tag language.Tag) (*schema.Language, error) 
 	}, nil
 
 }
-
-type LanguagesBag interface {
-	RegisterNewLang(language *schema.Language) (*schema.Language, error)
-	AddNewLangToError(errorID ulid.ULID, language *schema.Language, message string) (*schema.Language, error)
-	GetLanguageByID(id ulid.ULID) (*schema.Language, error)
-	UpdateLanguageByID(id ulid.ULID, update *schema.Language) (*schema.Language, error)
-	RemoveLanguageByID(id ulid.ULID) (*schema.Language, error)
-}

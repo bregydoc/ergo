@@ -11,7 +11,7 @@ type BadgerBag struct {
 	db *badger.DB
 }
 
-func NewBagerBag(dir, valueDir string, opts ...badger.Options) (*BadgerBag, error) {
+func NewBadgerBag(dir, valueDir string, opts ...badger.Options) (*BadgerBag, error) {
 	// db, err := badger.Open(opts)
 	opt := badger.DefaultOptions
 	if len(opts) > 0 {
@@ -100,7 +100,7 @@ func (b *BadgerBag) RegisterNewErrorFromNative(errN error, message ...string) (*
 }
 
 // RegisterNewError implements Ergo bag
-func (b *BadgerBag) nRegisterNewError(ergoError *schema.Error) (*schema.Error, error) {
+func (b *BadgerBag) RegisterNewError(ergoError *schema.Error) (*schema.Error, error) {
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 
@@ -149,4 +149,62 @@ func (b *BadgerBag) RemoveErrorByID(id ulid.ULID) (*schema.Error, error) {
 func (b *BadgerBag) RemoveErrorByNative(errN error) (*schema.Error, error) {
 	panic("unimplemented")
 	return &schema.Error{}, nil
+}
+
+// RegisterNewLang implements Ergo bag
+func (b *BadgerBag) RegisterNewLang(language *schema.Language) (*schema.Language, error) {
+	txn := b.db.NewTransaction(true)
+	defer txn.Discard()
+
+	data, err := proto.Marshal(language)
+	if err != nil {
+		return nil, err
+	}
+
+	err = txn.Set(language.Id, data)
+
+	var id ulid.ULID
+	copy(id[:], language.Id)
+
+	return b.GetLanguageByID(id)
+}
+
+// AddNewLangToError implements Ergo bag
+func (b *BadgerBag) AddNewLangToError(errorID ulid.ULID, language *schema.Language, message string) (*schema.Language, error) {
+	panic("unimplemented")
+}
+
+// GetLanguageByID implements Ergo bag
+func (b *BadgerBag) GetLanguageByID(id ulid.ULID) (*schema.Language, error) {
+	txn := b.db.NewTransaction(false)
+	defer txn.Discard()
+
+	item, err := txn.Get(id[:])
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := item.ValueCopy(nil)
+	if err != nil {
+		return nil, err
+	}
+
+	lang := new(schema.Language)
+
+	err = proto.Unmarshal(data, lang)
+	if err != nil {
+		return nil, err
+	}
+
+	return lang, nil
+}
+
+// UpdateLanguageByID implements Ergo bag
+func (b *BadgerBag) UpdateLanguageByID(id ulid.ULID, update *schema.Language) (*schema.Language, error) {
+	panic("unimplemented")
+}
+
+// RemoveLanguageByID implements Ergo bag
+func (b *BadgerBag) RemoveLanguageByID(id ulid.ULID) (*schema.Language, error) {
+	panic("unimplemented")
 }

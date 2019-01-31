@@ -62,5 +62,5 @@ type Repository interface {
 	DeleteError(errorID ulid.ULID) error
 
 	// Temporal
-	// SetMessageErrorInLanguage(errorID ulid.ULID, language language.Tag, message string) (*schema.UserMessage, error)
+	SetOneMessageError(errorID ulid.ULID, language language.Tag, message string) (*schema.UserMessage, error)
 }

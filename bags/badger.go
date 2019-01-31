@@ -364,3 +364,33 @@ func (b *BadgerRepo) DeleteError(errorID ulid.ULID) error {
 
 	return nil
 }
+
+// SetOneMessageError implements the Bag interface of Ergo
+func (b *BadgerRepo) SetOneMessageError(errorID ulid.ULID, language language.Tag, message string) (*schema.UserMessage, error) {
+	txn := b.db.NewTransaction(true)
+	defer txn.Discard()
+
+	mID := getErrorMessageLanguageID(errorID, language)
+	m := &schema.UserMessage{
+		Id:       errorID[:],
+		Language: language.String(),
+		Message:  message,
+	}
+
+	mData, err := proto.Marshal(m)
+	if err != nil {
+		return nil, err
+	}
+
+	err = txn.Set(mID, mData)
+	if err != nil {
+		return nil, err
+	}
+
+	err = txn.Commit()
+	if err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}

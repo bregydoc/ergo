@@ -176,8 +176,8 @@ func (b *BadgerRepo) RegisterNewUserMessage(errorID ulid.ULID, uMessage *ergo.Us
 	return m, nil
 }
 
-// AddFeedBackToUser implements the Bag interface of Ergo
-func (b *BadgerRepo) AddFeedBackToUser(errorID ulid.ULID, feedback *ergo.UserFeedback) (*schema.Feedback, error) {
+// AddFeedbackToUser implements the Bag interface of Ergo
+func (b *BadgerRepo) AddFeedbackToUser(errorID ulid.ULID, feedback *ergo.UserFeedback) (*schema.Feedback, error) {
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 

@@ -25,8 +25,8 @@ type ErrorCreator struct {
 	Explain     string
 	Where       string
 	Raw         string
-	UserMessage UserMessage
-	Action      Action
+	UserMessage *UserMessage
+	Action      *Action
 	Image       string
 }
 
@@ -51,7 +51,7 @@ type ErrorUpdate struct {
 type Repository interface {
 	SaveNewError(seed *ErrorCreator) (*schema.ErrorInstance, error)
 	RegisterNewUserMessage(errorID ulid.ULID, uMessage *UserMessage) (*schema.UserMessage, error)
-	AddFeedBackToUser(errorID ulid.ULID, feedback *UserFeedback) (*schema.Feedback, error)
+	AddFeedbackToUser(errorID ulid.ULID, feedback *UserFeedback) (*schema.Feedback, error)
 
 	GetErrorInstance(errorID ulid.ULID) (*schema.ErrorInstance, error)
 	GetErrorForHuman(errorID ulid.ULID, languages ...language.Tag) (*schema.ErrorHuman, error)

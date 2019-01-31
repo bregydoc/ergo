@@ -1,14 +1,24 @@
 package ergo
 
 import (
-	"github.com/oklog/ulid"
+	"io"
 	"math/rand"
 	"time"
+
+	"github.com/oklog/ulid"
 )
 
-var t = time.Unix(1000000, 0)
-var entropy = ulid.Monotonic(rand.New(rand.NewSource(t.UnixNano())), 0)
+type gen struct {
+	t       time.Time
+	entropy io.Reader
+}
 
-func newULID() ulid.ULID {
-	return ulid.MustNew(ulid.Timestamp(t), entropy)
+func (g *gen) New() ulid.ULID {
+	return ulid.MustNew(ulid.Timestamp(g.t), g.entropy)
+}
+
+// UlidGen is a gen instace to create serial ulids
+var UlidGen = gen{
+	t:       time.Unix(1000000, 0),
+	entropy: ulid.Monotonic(rand.New(rand.NewSource(time.Unix(1000000, 0).UnixNano())), 0),
 }

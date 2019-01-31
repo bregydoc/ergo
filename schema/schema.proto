@@ -4,18 +4,49 @@ package ergo;
 
 option go_package = "schema";
 
-
-message Error {
-    bytes id = 1;
-    uint64 code = 2;
-    string error = 3;
-    string message = 4;
-
-    Language defaultLanguage = 5;
-    repeated Language availableLanguages = 6;
+enum ErrorType {
+    ONLY_READ = 0;
+    HUMAN_INTERACTIVE = 1;
 }
 
-message Language {
+message ErrorInstance { // This message will be stored in the Repo
     bytes id = 1;
-    string name = 2;
+    ErrorType type = 2;
+}
+
+// ERROR FOR DEVS
+message ErrorDev { // This message will be stored in the Repo
+    bytes id = 1;
+    uint64 code = 2;
+    repeated Feedback feedback = 3;
+    ErrorType type = 4;
+    string explain = 5;
+    string where = 6;
+    string raw = 7;
+}
+
+message Feedback {
+    bytes byID = 1;
+    string by = 2;
+    string message = 3;
+}
+
+// HOW IS AN ERROR FOR HUMANS:
+message ErrorHuman { // This message will be stored in the Repo
+    bytes id = 1;
+    ErrorType type = 2;
+    repeated UserMessage messages = 3; // That is filled at the moment
+    repeated Action action  = 4; // That is filled at the moment
+    string image = 5;
+}
+
+message UserMessage { // This message will be stored in the Repo
+    bytes id = 1;
+    string language = 2;
+    string message = 3;
+}
+
+message Action {
+    string link = 1;
+    string message = 2;
 }

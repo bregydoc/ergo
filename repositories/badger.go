@@ -1,4 +1,4 @@
-package bags
+package repositories
 
 import (
 	"github.com/bregydoc/ergo"
@@ -63,7 +63,7 @@ func (b *BadgerRepo) SaveNewError(seed *ergo.ErrorCreator) (*schema.ErrorInstanc
 
 	newErrorID := ergo.UlidGen.New()
 
-	// Firt, create the instance
+	// First, create the instance
 	instance := &schema.ErrorInstance{
 		Id:   newErrorID[:],
 		Type: seed.ErrorType,

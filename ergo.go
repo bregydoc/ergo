@@ -11,18 +11,18 @@ import (
 // Options is a struct to configure to wizard
 type Options struct {
 	DefaultLanguage    language.Tag
-	AvailableLanguades []language.Tag
+	AvailableLanguages []language.Tag
 	DefaultImage       string
 	DefaultActionLink  string
 }
 
 // Ergo is a wizard
 type Ergo struct {
-	opt  *Options
-	repo Repository
+	Opt  *Options
+	Repo Repository
 }
 
-// RegisterNewError implements Wizard intreface, then Ergo is a wizard, a wizard of your errors
+// RegisterNewError implements Wizard interface, then Ergo is a wizard, a wizard of your errors
 func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, withFeedback bool) (*schema.ErrorInstance, error) {
 	code := 100 + rand.Int63n(300)
 
@@ -34,40 +34,46 @@ func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, 
 	creator := &ErrorCreator{
 		Where:       where,
 		Explain:     explain,
-		Image:       ergo.opt.DefaultImage,
+		Image:       ergo.Opt.DefaultImage,
 		Code:        uint64(code),
 		ErrorType:   eType,
 		Raw:         explain,
 		UserMessage: message,
 		Action: &Action{
 			Message: "More information",
-			Link:    ergo.opt.DefaultActionLink,
+			Link:    ergo.Opt.DefaultActionLink,
 		},
 	}
 
-	return ergo.repo.SaveNewError(creator)
+	return ergo.Repo.SaveNewError(creator)
 }
 
-// RegisterFullError implements Wizard intreface, then Ergo is a wizard, a wizard of your errors
+// RegisterFullError implements Wizard interface, then Ergo is a wizard, a wizard of your errors
 func (ergo *Ergo) RegisterFullError(asDev *schema.ErrorDev, asHuman *schema.ErrorHuman, withFeedback bool) (*schema.ErrorInstance, error) {
 	panic("unimplemented")
 }
 
-// ConsultErrorAsHuman implements Wizard intreface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) ConsultErrorAsHuman(errorID ulid.ULID, languages ...language.Tag) (*schema.ErrorHuman, error) {
-	return ergo.repo.GetErrorForHuman(errorID, languages...)
+// ConsultErrorAsHuman implements Wizard interface, then Ergo is a wizard, a wizard of your errors
+func (ergo *Ergo) ConsultErrorAsHuman(errorID []byte, languages ...language.Tag) (*schema.ErrorHuman, error) {
+	var id ulid.ULID
+	copy(id[:], errorID)
+	return ergo.Repo.GetErrorForHuman(id, languages...)
 }
 
-// ConsultErrorAsDeveloper implements Wizard intreface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) ConsultErrorAsDeveloper(errorID ulid.ULID) (*schema.ErrorDev, error) {
-	return ergo.repo.GetErrorForDev(errorID)
+// ConsultErrorAsDeveloper implements Wizard interface, then Ergo is a wizard, a wizard of your errors
+func (ergo *Ergo) ConsultErrorAsDeveloper(errorID []byte) (*schema.ErrorDev, error) {
+	var id ulid.ULID
+	copy(id[:], errorID)
+	return ergo.Repo.GetErrorForDev(id)
 }
 
-// MemorizeNewMessages implements Wizard intreface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) MemorizeNewMessages(errorID ulid.ULID, messages ...*UserMessage) ([]*schema.UserMessage, error) {
+// MemorizeNewMessages implements Wizard interface, then Ergo is a wizard, a wizard of your errors
+func (ergo *Ergo) MemorizeNewMessages(errorID []byte, messages ...*UserMessage) ([]*schema.UserMessage, error) {
+	var id ulid.ULID
+	copy(id[:], errorID)
 	responses := make([]*schema.UserMessage, 0)
 	for _, m := range messages {
-		resp, err := ergo.repo.SetOneMessageError(errorID, m.Language, m.Message)
+		resp, err := ergo.Repo.SetOneMessageError(id, m.Language, m.Message)
 		if err != nil {
 			return nil, err
 		}
@@ -77,7 +83,9 @@ func (ergo *Ergo) MemorizeNewMessages(errorID ulid.ULID, messages ...*UserMessag
 	return responses, nil
 }
 
-// ReceiveFeedbackOfUser implements Wizard intreface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) ReceiveFeedbackOfUser(errorID ulid.ULID, feedback *UserFeedback) (*schema.Feedback, error) {
-	return ergo.repo.AddFeedbackToUser(errorID, feedback)
+// ReceiveFeedbackOfUser implements Wizard interface, then Ergo is a wizard, a wizard of your errors
+func (ergo *Ergo) ReceiveFeedbackOfUser(errorID []byte, feedback *UserFeedback) (*schema.Feedback, error) {
+	var id ulid.ULID
+	copy(id[:], errorID)
+	return ergo.Repo.AddFeedbackToUser(id, feedback)
 }

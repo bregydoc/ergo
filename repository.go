@@ -12,7 +12,7 @@ type UserMessage struct {
 	Message  string
 }
 
-// Action describe a posible actions for users
+// Action describe a possible actions for users
 type Action struct {
 	Link    string
 	Message string

@@ -1,4 +1,4 @@
-package bags
+package repositories
 
 // MongoBag ...
 type MongoBag struct {

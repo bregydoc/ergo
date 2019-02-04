@@ -7,7 +7,7 @@ import (
 
 var unknownErrorInstance = &schema.ErrorInstance{
 	Id:   []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	Code: 0,
+	Code: uint64(100),
 	Type: schema.ErrorType_ONLY_READ,
 }
 
@@ -24,15 +24,15 @@ var unknownErrorForHumans = &schema.ErrorHuman{
 	Messages: []*schema.UserMessage{
 		{
 			Language: language.English.String(),
-			Message:  "Sorry, we not know this error, you can send a feedback",
+			Message:  "Sorry, we're not register this error in our systems. If you want, you can send a feedback.",
 		},
 	},
 }
 
 var unknownErrorForDevelopers = &schema.ErrorDev{
-	Id:       []byte{},
+	Id:       []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	Type:     schema.ErrorType_ONLY_READ,
-	Code:     0,
+	Code:     uint64(100),
 	Explain:  "unknown error, ergo could not found",
 	Raw:      "unknown error, ergo could not found",
 	Feedback: []*schema.Feedback{},

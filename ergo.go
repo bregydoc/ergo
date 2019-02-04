@@ -1,6 +1,7 @@
 package ergo
 
 import (
+	"github.com/bregydoc/gtranslate"
 	"math/rand"
 	"strings"
 
@@ -109,12 +110,42 @@ func (ergo *Ergo) ConsultErrorAsDeveloper(errorID []byte) (*schema.ErrorDev, err
 }
 
 // MemorizeNewMessages implements Wizard interface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) MemorizeNewMessages(errorID []byte, messages ...*UserMessage) ([]*schema.UserMessage, error) {
+func (ergo *Ergo) MemorizeNewMessages(errorID []byte, withAutoTranslate bool, messages ...*UserMessage) ([]*schema.UserMessage, error) {
 	var id ulid.ULID
 	copy(id[:], errorID)
 	responses := make([]*schema.UserMessage, 0)
+	var ergoError *schema.ErrorHuman
+
 	for _, m := range messages {
-		resp, err := ergo.Repo.SetOneMessageError(id, m.Language, m.Message)
+
+		// If the message not exist, we can auto translate it
+		message := m.Message
+		if withAutoTranslate {
+			if m.Message == "" {
+				if ergoError == nil {
+					var err error
+					ergoError, err = ergo.ConsultErrorAsHuman(errorID, language.English)
+					if err != nil {
+						return nil, err
+					}
+				}
+
+				if len(ergoError.Messages) == 0 {
+					continue
+				}
+
+				// I expected a english message
+				inEnglish := ergoError.Messages[0].Message
+				var err error
+				message, err = gtranslate.Translate(inEnglish, language.English, m.Language)
+				if err != nil {
+					continue
+				}
+
+			}
+		}
+
+		resp, err := ergo.Repo.SetOneMessageError(id, m.Language, message)
 		if err != nil {
 			return nil, err
 		}

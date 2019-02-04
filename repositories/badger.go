@@ -137,7 +137,7 @@ func (b *BadgerRepo) SaveNewError(seed *ergo.ErrorCreator) (*schema.ErrorInstanc
 		Id:       newErrorID[:],
 		Type:     seed.ErrorType,
 		Image:    seed.Image,
-		Messages: []*schema.UserMessage{uMessage},
+		Messages: []*schema.UserMessage{},
 		Action:   []*schema.Action{{Link: seed.Action.Link, Message: seed.Action.Message}},
 	}
 

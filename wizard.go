@@ -22,7 +22,7 @@ type Wizard interface {
 	ConsultErrorAsHuman(errorID []byte, languages ...language.Tag) (*schema.ErrorHuman, error)
 	ConsultErrorAsDeveloper(errorID []byte) (*schema.ErrorDev, error)
 	// Save new messages
-	MemorizeNewMessages(errorID []byte, messages ...*UserMessage) ([]*schema.UserMessage, error)
+	MemorizeNewMessages(errorID []byte, withAutoTranslate bool, messages ...*UserMessage) ([]*schema.UserMessage, error)
 	// Save new feedback
 	ReceiveFeedbackOfUser(errorID []byte, feedback *UserFeedback) (*schema.Feedback, error)
 }

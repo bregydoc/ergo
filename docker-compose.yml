@@ -1,0 +1,13 @@
+version: '3'
+services:
+  ergo:
+    restart: always
+    build: .
+    ports:
+      - "10500:10500" # for dev
+      - "4200:4200" # for human
+    volumes:
+      - ergo:/db
+
+volumes:
+  ergo:

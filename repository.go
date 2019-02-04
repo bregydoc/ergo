@@ -28,6 +28,7 @@ type ErrorCreator struct {
 	UserMessage *UserMessage
 	Action      *Action
 	Image       string
+	SuggestedID []byte
 }
 
 // UserFeedback is a util struct to create user feedback response

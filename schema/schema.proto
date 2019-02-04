@@ -2,11 +2,65 @@ syntax = "proto3";
 
 package ergo;
 
+// import "google/protobuf/";
+
+
 option go_package = "schema";
+
 
 enum ErrorType {
     ONLY_READ = 0;
     HUMAN_INTERACTIVE = 1;
+}
+
+service Ergo {
+    rpc RegisterNewError(ErrorSeed) returns (ErrorInstance) {}
+	rpc RegisterFullError(FullErrorSeed) returns (ErrorInstance) {}
+	rpc ConsultErrorAsHuman(ConsultAsHuman) returns (ErrorHuman) {}
+	rpc ConsultErrorAsDeveloper(ConsultAsDev) returns (ErrorDev) {}
+
+	// Save new messages
+	rpc MemorizeNewMessages(NewMessageParams) returns (UserMessages) {}
+	// Save new feedback
+	rpc ReceiveFeedbackOfUser(NewFeedBack) returns (Feedback) {}
+}
+
+message NewFeedBack {
+    bytes errorID = 1;
+    repeated Feedback messages = 2;
+}
+
+message UserMessages {
+    repeated UserMessage messages = 1;
+}
+
+message NewMessageParams {
+    bytes errorID = 1;
+    repeated UserMessage messages = 2;
+}
+
+message ConsultAsHuman {
+    bytes errorID = 1;
+    repeated string languages = 2;
+}
+
+message ConsultAsDev {
+    bytes errorID = 1;
+}
+
+message FullErrorSeed {
+    ErrorDev asDev = 1;
+    ErrorHuman asHuman = 2;
+    bool withFeedback = 3;
+}
+
+message ErrorSeed {
+    string where = 1;
+    string explain = 2;
+    string messageLanguage= 3;
+    string messageContent= 4;
+    bool withFeedback = 5;
+    uint64 code = 6;
 }
 
 message ErrorInstance { // This message will be stored in the Repo

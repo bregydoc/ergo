@@ -23,8 +23,15 @@ type Ergo struct {
 }
 
 // RegisterNewError implements Wizard interface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, withFeedback bool) (*schema.ErrorInstance, error) {
-	code := 100 + rand.Int63n(300)
+func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, withFeedback bool, suggestedID ...[]byte) (*schema.ErrorInstance, error) {
+	var finalCode = uint64(100 + rand.Int63n(300))
+
+	var sugID []byte
+	if len(suggestedID) != 0 {
+		sugID = suggestedID[0]
+	} else {
+		sugID = nil
+	}
 
 	eType := schema.ErrorType_ONLY_READ
 	if withFeedback {
@@ -35,7 +42,7 @@ func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, 
 		Where:       where,
 		Explain:     explain,
 		Image:       ergo.Opt.DefaultImage,
-		Code:        uint64(code),
+		Code:        finalCode,
 		ErrorType:   eType,
 		Raw:         explain,
 		UserMessage: message,
@@ -43,6 +50,7 @@ func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, 
 			Message: "More information",
 			Link:    ergo.Opt.DefaultActionLink,
 		},
+		SuggestedID: sugID,
 	}
 
 	return ergo.Repo.SaveNewError(creator)

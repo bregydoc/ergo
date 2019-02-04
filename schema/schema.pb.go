@@ -4,8 +4,10 @@
 package schema
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	grpc "google.golang.org/grpc"
 	io "io"
 	math "math"
 )
@@ -46,6 +48,415 @@ func (ErrorType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_98b0d2c3e7e0142d, []int{0}
 }
 
+type NewFeedBack struct {
+	ErrorID              []byte      `protobuf:"bytes,1,opt,name=errorID,proto3" json:"errorID,omitempty"`
+	Messages             []*Feedback `protobuf:"bytes,2,rep,name=messages,proto3" json:"messages,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
+}
+
+func (m *NewFeedBack) Reset()         { *m = NewFeedBack{} }
+func (m *NewFeedBack) String() string { return proto.CompactTextString(m) }
+func (*NewFeedBack) ProtoMessage()    {}
+func (*NewFeedBack) Descriptor() ([]byte, []int) {
+	return fileDescriptor_98b0d2c3e7e0142d, []int{0}
+}
+func (m *NewFeedBack) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NewFeedBack) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NewFeedBack.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NewFeedBack) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewFeedBack.Merge(m, src)
+}
+func (m *NewFeedBack) XXX_Size() int {
+	return m.Size()
+}
+func (m *NewFeedBack) XXX_DiscardUnknown() {
+	xxx_messageInfo_NewFeedBack.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NewFeedBack proto.InternalMessageInfo
+
+func (m *NewFeedBack) GetErrorID() []byte {
+	if m != nil {
+		return m.ErrorID
+	}
+	return nil
+}
+
+func (m *NewFeedBack) GetMessages() []*Feedback {
+	if m != nil {
+		return m.Messages
+	}
+	return nil
+}
+
+type UserMessages struct {
+	Messages             []*UserMessage `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *UserMessages) Reset()         { *m = UserMessages{} }
+func (m *UserMessages) String() string { return proto.CompactTextString(m) }
+func (*UserMessages) ProtoMessage()    {}
+func (*UserMessages) Descriptor() ([]byte, []int) {
+	return fileDescriptor_98b0d2c3e7e0142d, []int{1}
+}
+func (m *UserMessages) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UserMessages) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UserMessages.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UserMessages) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UserMessages.Merge(m, src)
+}
+func (m *UserMessages) XXX_Size() int {
+	return m.Size()
+}
+func (m *UserMessages) XXX_DiscardUnknown() {
+	xxx_messageInfo_UserMessages.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UserMessages proto.InternalMessageInfo
+
+func (m *UserMessages) GetMessages() []*UserMessage {
+	if m != nil {
+		return m.Messages
+	}
+	return nil
+}
+
+type NewMessageParams struct {
+	ErrorID              []byte         `protobuf:"bytes,1,opt,name=errorID,proto3" json:"errorID,omitempty"`
+	Messages             []*UserMessage `protobuf:"bytes,2,rep,name=messages,proto3" json:"messages,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *NewMessageParams) Reset()         { *m = NewMessageParams{} }
+func (m *NewMessageParams) String() string { return proto.CompactTextString(m) }
+func (*NewMessageParams) ProtoMessage()    {}
+func (*NewMessageParams) Descriptor() ([]byte, []int) {
+	return fileDescriptor_98b0d2c3e7e0142d, []int{2}
+}
+func (m *NewMessageParams) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NewMessageParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NewMessageParams.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NewMessageParams) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewMessageParams.Merge(m, src)
+}
+func (m *NewMessageParams) XXX_Size() int {
+	return m.Size()
+}
+func (m *NewMessageParams) XXX_DiscardUnknown() {
+	xxx_messageInfo_NewMessageParams.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NewMessageParams proto.InternalMessageInfo
+
+func (m *NewMessageParams) GetErrorID() []byte {
+	if m != nil {
+		return m.ErrorID
+	}
+	return nil
+}
+
+func (m *NewMessageParams) GetMessages() []*UserMessage {
+	if m != nil {
+		return m.Messages
+	}
+	return nil
+}
+
+type ConsultAsHuman struct {
+	ErrorID              []byte   `protobuf:"bytes,1,opt,name=errorID,proto3" json:"errorID,omitempty"`
+	Languages            []string `protobuf:"bytes,2,rep,name=languages,proto3" json:"languages,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConsultAsHuman) Reset()         { *m = ConsultAsHuman{} }
+func (m *ConsultAsHuman) String() string { return proto.CompactTextString(m) }
+func (*ConsultAsHuman) ProtoMessage()    {}
+func (*ConsultAsHuman) Descriptor() ([]byte, []int) {
+	return fileDescriptor_98b0d2c3e7e0142d, []int{3}
+}
+func (m *ConsultAsHuman) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConsultAsHuman) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConsultAsHuman.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConsultAsHuman) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConsultAsHuman.Merge(m, src)
+}
+func (m *ConsultAsHuman) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConsultAsHuman) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConsultAsHuman.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConsultAsHuman proto.InternalMessageInfo
+
+func (m *ConsultAsHuman) GetErrorID() []byte {
+	if m != nil {
+		return m.ErrorID
+	}
+	return nil
+}
+
+func (m *ConsultAsHuman) GetLanguages() []string {
+	if m != nil {
+		return m.Languages
+	}
+	return nil
+}
+
+type ConsultAsDev struct {
+	ErrorID              []byte   `protobuf:"bytes,1,opt,name=errorID,proto3" json:"errorID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConsultAsDev) Reset()         { *m = ConsultAsDev{} }
+func (m *ConsultAsDev) String() string { return proto.CompactTextString(m) }
+func (*ConsultAsDev) ProtoMessage()    {}
+func (*ConsultAsDev) Descriptor() ([]byte, []int) {
+	return fileDescriptor_98b0d2c3e7e0142d, []int{4}
+}
+func (m *ConsultAsDev) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConsultAsDev) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConsultAsDev.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConsultAsDev) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConsultAsDev.Merge(m, src)
+}
+func (m *ConsultAsDev) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConsultAsDev) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConsultAsDev.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConsultAsDev proto.InternalMessageInfo
+
+func (m *ConsultAsDev) GetErrorID() []byte {
+	if m != nil {
+		return m.ErrorID
+	}
+	return nil
+}
+
+type FullErrorSeed struct {
+	AsDev                *ErrorDev   `protobuf:"bytes,1,opt,name=asDev,proto3" json:"asDev,omitempty"`
+	AsHuman              *ErrorHuman `protobuf:"bytes,2,opt,name=asHuman,proto3" json:"asHuman,omitempty"`
+	WithFeedback         bool        `protobuf:"varint,3,opt,name=withFeedback,proto3" json:"withFeedback,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
+}
+
+func (m *FullErrorSeed) Reset()         { *m = FullErrorSeed{} }
+func (m *FullErrorSeed) String() string { return proto.CompactTextString(m) }
+func (*FullErrorSeed) ProtoMessage()    {}
+func (*FullErrorSeed) Descriptor() ([]byte, []int) {
+	return fileDescriptor_98b0d2c3e7e0142d, []int{5}
+}
+func (m *FullErrorSeed) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *FullErrorSeed) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_FullErrorSeed.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *FullErrorSeed) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FullErrorSeed.Merge(m, src)
+}
+func (m *FullErrorSeed) XXX_Size() int {
+	return m.Size()
+}
+func (m *FullErrorSeed) XXX_DiscardUnknown() {
+	xxx_messageInfo_FullErrorSeed.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FullErrorSeed proto.InternalMessageInfo
+
+func (m *FullErrorSeed) GetAsDev() *ErrorDev {
+	if m != nil {
+		return m.AsDev
+	}
+	return nil
+}
+
+func (m *FullErrorSeed) GetAsHuman() *ErrorHuman {
+	if m != nil {
+		return m.AsHuman
+	}
+	return nil
+}
+
+func (m *FullErrorSeed) GetWithFeedback() bool {
+	if m != nil {
+		return m.WithFeedback
+	}
+	return false
+}
+
+type ErrorSeed struct {
+	Where                string   `protobuf:"bytes,1,opt,name=where,proto3" json:"where,omitempty"`
+	Explain              string   `protobuf:"bytes,2,opt,name=explain,proto3" json:"explain,omitempty"`
+	MessageLanguage      string   `protobuf:"bytes,3,opt,name=messageLanguage,proto3" json:"messageLanguage,omitempty"`
+	MessageContent       string   `protobuf:"bytes,4,opt,name=messageContent,proto3" json:"messageContent,omitempty"`
+	WithFeedback         bool     `protobuf:"varint,5,opt,name=withFeedback,proto3" json:"withFeedback,omitempty"`
+	Code                 uint64   `protobuf:"varint,6,opt,name=code,proto3" json:"code,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ErrorSeed) Reset()         { *m = ErrorSeed{} }
+func (m *ErrorSeed) String() string { return proto.CompactTextString(m) }
+func (*ErrorSeed) ProtoMessage()    {}
+func (*ErrorSeed) Descriptor() ([]byte, []int) {
+	return fileDescriptor_98b0d2c3e7e0142d, []int{6}
+}
+func (m *ErrorSeed) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ErrorSeed) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ErrorSeed.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ErrorSeed) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ErrorSeed.Merge(m, src)
+}
+func (m *ErrorSeed) XXX_Size() int {
+	return m.Size()
+}
+func (m *ErrorSeed) XXX_DiscardUnknown() {
+	xxx_messageInfo_ErrorSeed.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ErrorSeed proto.InternalMessageInfo
+
+func (m *ErrorSeed) GetWhere() string {
+	if m != nil {
+		return m.Where
+	}
+	return ""
+}
+
+func (m *ErrorSeed) GetExplain() string {
+	if m != nil {
+		return m.Explain
+	}
+	return ""
+}
+
+func (m *ErrorSeed) GetMessageLanguage() string {
+	if m != nil {
+		return m.MessageLanguage
+	}
+	return ""
+}
+
+func (m *ErrorSeed) GetMessageContent() string {
+	if m != nil {
+		return m.MessageContent
+	}
+	return ""
+}
+
+func (m *ErrorSeed) GetWithFeedback() bool {
+	if m != nil {
+		return m.WithFeedback
+	}
+	return false
+}
+
+func (m *ErrorSeed) GetCode() uint64 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
 type ErrorInstance struct {
 	Id                   []byte    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Type                 ErrorType `protobuf:"varint,2,opt,name=type,proto3,enum=ergo.ErrorType" json:"type,omitempty"`
@@ -58,7 +469,7 @@ func (m *ErrorInstance) Reset()         { *m = ErrorInstance{} }
 func (m *ErrorInstance) String() string { return proto.CompactTextString(m) }
 func (*ErrorInstance) ProtoMessage()    {}
 func (*ErrorInstance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_98b0d2c3e7e0142d, []int{0}
+	return fileDescriptor_98b0d2c3e7e0142d, []int{7}
 }
 func (m *ErrorInstance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -119,7 +530,7 @@ func (m *ErrorDev) Reset()         { *m = ErrorDev{} }
 func (m *ErrorDev) String() string { return proto.CompactTextString(m) }
 func (*ErrorDev) ProtoMessage()    {}
 func (*ErrorDev) Descriptor() ([]byte, []int) {
-	return fileDescriptor_98b0d2c3e7e0142d, []int{1}
+	return fileDescriptor_98b0d2c3e7e0142d, []int{8}
 }
 func (m *ErrorDev) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -210,7 +621,7 @@ func (m *Feedback) Reset()         { *m = Feedback{} }
 func (m *Feedback) String() string { return proto.CompactTextString(m) }
 func (*Feedback) ProtoMessage()    {}
 func (*Feedback) Descriptor() ([]byte, []int) {
-	return fileDescriptor_98b0d2c3e7e0142d, []int{2}
+	return fileDescriptor_98b0d2c3e7e0142d, []int{9}
 }
 func (m *Feedback) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -276,7 +687,7 @@ func (m *ErrorHuman) Reset()         { *m = ErrorHuman{} }
 func (m *ErrorHuman) String() string { return proto.CompactTextString(m) }
 func (*ErrorHuman) ProtoMessage()    {}
 func (*ErrorHuman) Descriptor() ([]byte, []int) {
-	return fileDescriptor_98b0d2c3e7e0142d, []int{3}
+	return fileDescriptor_98b0d2c3e7e0142d, []int{10}
 }
 func (m *ErrorHuman) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -353,7 +764,7 @@ func (m *UserMessage) Reset()         { *m = UserMessage{} }
 func (m *UserMessage) String() string { return proto.CompactTextString(m) }
 func (*UserMessage) ProtoMessage()    {}
 func (*UserMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_98b0d2c3e7e0142d, []int{4}
+	return fileDescriptor_98b0d2c3e7e0142d, []int{11}
 }
 func (m *UserMessage) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -415,7 +826,7 @@ func (m *Action) Reset()         { *m = Action{} }
 func (m *Action) String() string { return proto.CompactTextString(m) }
 func (*Action) ProtoMessage()    {}
 func (*Action) Descriptor() ([]byte, []int) {
-	return fileDescriptor_98b0d2c3e7e0142d, []int{5}
+	return fileDescriptor_98b0d2c3e7e0142d, []int{12}
 }
 func (m *Action) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -460,6 +871,13 @@ func (m *Action) GetMessage() string {
 
 func init() {
 	proto.RegisterEnum("ergo.ErrorType", ErrorType_name, ErrorType_value)
+	proto.RegisterType((*NewFeedBack)(nil), "ergo.NewFeedBack")
+	proto.RegisterType((*UserMessages)(nil), "ergo.UserMessages")
+	proto.RegisterType((*NewMessageParams)(nil), "ergo.NewMessageParams")
+	proto.RegisterType((*ConsultAsHuman)(nil), "ergo.ConsultAsHuman")
+	proto.RegisterType((*ConsultAsDev)(nil), "ergo.ConsultAsDev")
+	proto.RegisterType((*FullErrorSeed)(nil), "ergo.FullErrorSeed")
+	proto.RegisterType((*ErrorSeed)(nil), "ergo.ErrorSeed")
 	proto.RegisterType((*ErrorInstance)(nil), "ergo.ErrorInstance")
 	proto.RegisterType((*ErrorDev)(nil), "ergo.ErrorDev")
 	proto.RegisterType((*Feedback)(nil), "ergo.Feedback")
@@ -471,35 +889,588 @@ func init() {
 func init() { proto.RegisterFile("schema/schema.proto", fileDescriptor_98b0d2c3e7e0142d) }
 
 var fileDescriptor_98b0d2c3e7e0142d = []byte{
-	// 435 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x52, 0xdd, 0x6a, 0xd4, 0x40,
-	0x14, 0xee, 0x64, 0xd3, 0x34, 0x39, 0x6d, 0xd7, 0xed, 0xa8, 0x30, 0x78, 0xb1, 0x84, 0xe8, 0x45,
-	0x28, 0xb8, 0x62, 0x05, 0xef, 0xa3, 0x89, 0x6c, 0xc0, 0xae, 0x30, 0x6e, 0x05, 0xbd, 0x29, 0x93,
-	0x64, 0xdc, 0x86, 0x6e, 0x7e, 0x98, 0xa4, 0xd6, 0xbc, 0x89, 0x0f, 0xe1, 0x4b, 0x78, 0xe7, 0xa5,
-	0x8f, 0x20, 0xeb, 0x8b, 0xc8, 0xcc, 0xa4, 0xa1, 0x52, 0xd8, 0x0b, 0xaf, 0xe6, 0xfc, 0x7d, 0xdf,
-	0xf9, 0xce, 0xc7, 0xc0, 0xfd, 0x26, 0xbd, 0xe0, 0x05, 0x7b, 0xa6, 0x9f, 0x59, 0x2d, 0xaa, 0xb6,
-	0xc2, 0x26, 0x17, 0xab, 0xca, 0x0b, 0xe1, 0x30, 0x12, 0xa2, 0x12, 0x71, 0xd9, 0xb4, 0xac, 0x4c,
-	0x39, 0x1e, 0x83, 0x91, 0x67, 0x04, 0xb9, 0xc8, 0x3f, 0xa0, 0x46, 0x9e, 0xe1, 0xc7, 0x60, 0xb6,
-	0x5d, 0xcd, 0x89, 0xe1, 0x22, 0x7f, 0x7c, 0x72, 0x6f, 0x26, 0x51, 0x33, 0x05, 0x59, 0x76, 0x35,
-	0xa7, 0xaa, 0xe9, 0xfd, 0x40, 0x60, 0xab, 0x5a, 0xc8, 0xbf, 0xdc, 0x61, 0xc0, 0x60, 0xa6, 0x55,
-	0xa6, 0x19, 0x4c, 0xaa, 0x62, 0x7c, 0x0c, 0xf6, 0x67, 0xce, 0xb3, 0x84, 0xa5, 0x97, 0x64, 0xe4,
-	0x8e, 0xfc, 0xfd, 0x93, 0xb1, 0x66, 0x7e, 0xd3, 0x57, 0xe9, 0xd0, 0x1f, 0x14, 0x98, 0x5b, 0x14,
-	0x60, 0x02, 0x7b, 0xfc, 0x6b, 0xbd, 0x66, 0x79, 0x49, 0x76, 0x5d, 0xe4, 0x3b, 0xf4, 0x26, 0xc5,
-	0x0f, 0x60, 0xf7, 0xfa, 0x82, 0x0b, 0x4e, 0x2c, 0x55, 0xd7, 0x09, 0x9e, 0xc0, 0x48, 0xb0, 0x6b,
-	0xb2, 0xa7, 0x6a, 0x32, 0xf4, 0xe6, 0x60, 0xdf, 0x2c, 0x97, 0x92, 0x93, 0x2e, 0x0e, 0xfb, 0x23,
-	0x54, 0x2c, 0xcf, 0x4a, 0x3a, 0x75, 0x84, 0x43, 0x8d, 0xa4, 0x93, 0x1b, 0x0b, 0xde, 0x34, 0x6c,
-	0xc5, 0xc9, 0x48, 0x6f, 0xec, 0x53, 0xef, 0x3b, 0x02, 0x50, 0xfa, 0xe6, 0x57, 0x05, 0x2b, 0xff,
-	0xcb, 0x51, 0xfc, 0x14, 0xec, 0x9e, 0xae, 0xe9, 0x0d, 0x3a, 0xd2, 0x83, 0x67, 0x0d, 0x17, 0xa7,
-	0xba, 0x43, 0x87, 0x11, 0xfc, 0x04, 0x2c, 0x96, 0xb6, 0x79, 0x55, 0x12, 0x53, 0x0d, 0x1f, 0xe8,
-	0xe1, 0x40, 0xd5, 0x68, 0xdf, 0x93, 0x56, 0xe4, 0x85, 0x14, 0xac, 0x2d, 0xd2, 0x89, 0xf7, 0x1e,
-	0xf6, 0x6f, 0x91, 0xde, 0x91, 0xfb, 0x08, 0xec, 0x35, 0x2b, 0x57, 0x57, 0x12, 0xa7, 0xaf, 0x1f,
-	0xf2, 0x2d, 0x1e, 0xbc, 0x04, 0x4b, 0x2f, 0x97, 0x5e, 0xae, 0xf3, 0xf2, 0x52, 0x31, 0x3a, 0x54,
-	0xc5, 0xb7, 0x71, 0xc6, 0x3f, 0xb8, 0xe3, 0xe7, 0xe0, 0x0c, 0x56, 0xe0, 0x43, 0x70, 0xde, 0x2d,
-	0xde, 0x7e, 0x3c, 0xa7, 0x51, 0x10, 0x4e, 0x76, 0xf0, 0x43, 0x38, 0x9a, 0x9f, 0x9d, 0x06, 0x8b,
-	0xf3, 0x78, 0xb1, 0x8c, 0x68, 0xf0, 0x7a, 0x19, 0x7f, 0x88, 0x26, 0xe8, 0x15, 0xf9, 0xb9, 0x99,
-	0xa2, 0x5f, 0x9b, 0x29, 0xfa, 0xbd, 0x99, 0xa2, 0x6f, 0x7f, 0xa6, 0x3b, 0x9f, 0x2c, 0xfd, 0xd1,
-	0x13, 0x4b, 0xfd, 0xf4, 0x17, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x5d, 0x6f, 0x40, 0xf8, 0x00,
-	0x03, 0x00, 0x00,
+	// 775 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0x51, 0x6f, 0x12, 0x41,
+	0x10, 0xe6, 0xe0, 0xa0, 0x30, 0xa5, 0x14, 0x96, 0x56, 0x2f, 0xc4, 0x10, 0x72, 0x36, 0x86, 0x34,
+	0x69, 0x8d, 0x35, 0xf1, 0xc1, 0x68, 0x0c, 0x05, 0x1a, 0x48, 0x5a, 0x6a, 0xb6, 0xad, 0x89, 0xfa,
+	0xd0, 0x1c, 0x30, 0xa5, 0x97, 0xc2, 0x1d, 0xb9, 0x3b, 0x40, 0x7c, 0x37, 0xf1, 0x27, 0xf8, 0x23,
+	0xfc, 0x13, 0x3e, 0x98, 0xf8, 0xe8, 0x4f, 0x30, 0xf5, 0x8f, 0x98, 0xdd, 0xdb, 0x3d, 0x0e, 0xb0,
+	0x98, 0xf8, 0x74, 0x37, 0x33, 0xdf, 0x7c, 0x3b, 0xfb, 0xed, 0xce, 0x2c, 0xe4, 0xdd, 0xce, 0x35,
+	0x0e, 0x8c, 0xc7, 0xfe, 0x67, 0x7f, 0xe8, 0xd8, 0x9e, 0x4d, 0x54, 0x74, 0x7a, 0xb6, 0x7e, 0x06,
+	0xeb, 0x2d, 0x9c, 0x1c, 0x21, 0x76, 0x0f, 0x8d, 0xce, 0x0d, 0xd1, 0x60, 0x0d, 0x1d, 0xc7, 0x76,
+	0x9a, 0x35, 0x4d, 0x29, 0x29, 0xe5, 0x34, 0x95, 0x26, 0xd9, 0x85, 0xe4, 0x00, 0x5d, 0xd7, 0xe8,
+	0xa1, 0xab, 0x45, 0x4b, 0xb1, 0xf2, 0xfa, 0x41, 0x66, 0x9f, 0x31, 0xec, 0xb3, 0xdc, 0xb6, 0xd1,
+	0xb9, 0xa1, 0x41, 0x5c, 0x7f, 0x09, 0xe9, 0x0b, 0x17, 0x9d, 0x13, 0x61, 0x93, 0xbd, 0x50, 0xae,
+	0xc2, 0x73, 0x73, 0x7e, 0x6e, 0x08, 0x15, 0x4a, 0x7f, 0x0f, 0xd9, 0x16, 0x4e, 0x84, 0xff, 0xb5,
+	0xe1, 0x18, 0x03, 0x77, 0x45, 0x61, 0x7b, 0x4b, 0x85, 0xad, 0x24, 0x6f, 0x40, 0xa6, 0x6a, 0x5b,
+	0xee, 0xa8, 0xef, 0x55, 0xdc, 0xc6, 0x68, 0x60, 0x58, 0x2b, 0xa8, 0x1f, 0x40, 0xaa, 0x6f, 0x58,
+	0xbd, 0x51, 0xc0, 0x9d, 0xa2, 0x33, 0x87, 0x5e, 0x86, 0x74, 0xc0, 0x54, 0xc3, 0xf1, 0xdd, 0x3c,
+	0xfa, 0x27, 0x05, 0x36, 0x8e, 0x46, 0xfd, 0x7e, 0x9d, 0xd9, 0x67, 0x88, 0x5d, 0xb2, 0x03, 0x71,
+	0x83, 0x25, 0x71, 0x64, 0x20, 0x25, 0x8f, 0xd7, 0x70, 0x4c, 0xfd, 0x20, 0xd9, 0x85, 0x35, 0xc3,
+	0x2f, 0x52, 0x8b, 0x72, 0x5c, 0x36, 0x84, 0xe3, 0x7e, 0x2a, 0x01, 0x44, 0x87, 0xf4, 0xc4, 0xf4,
+	0xae, 0xe5, 0x69, 0x68, 0xb1, 0x92, 0x52, 0x4e, 0xd2, 0x39, 0x9f, 0xfe, 0x5d, 0x81, 0xd4, 0xac,
+	0x86, 0x2d, 0x88, 0x4f, 0xae, 0xd1, 0x41, 0x5e, 0x43, 0x8a, 0xfa, 0x06, 0xdf, 0xc5, 0x87, 0x61,
+	0xdf, 0x30, 0xfd, 0x35, 0x53, 0x54, 0x9a, 0xa4, 0x0c, 0x9b, 0x42, 0xc5, 0x63, 0xa1, 0x01, 0x5f,
+	0x24, 0x45, 0x17, 0xdd, 0xe4, 0x11, 0x64, 0x84, 0xab, 0x6a, 0x5b, 0x1e, 0x5a, 0x9e, 0xa6, 0x72,
+	0xe0, 0x82, 0x77, 0xa9, 0xe6, 0xf8, 0x72, 0xcd, 0x84, 0x80, 0xda, 0xb1, 0xbb, 0xa8, 0x25, 0x4a,
+	0x4a, 0x59, 0xa5, 0xfc, 0x5f, 0xaf, 0xc1, 0x06, 0xdf, 0x46, 0xd3, 0x72, 0x3d, 0xc3, 0xea, 0x20,
+	0xc9, 0x40, 0xd4, 0xec, 0x0a, 0xd5, 0xa3, 0x66, 0x97, 0x3c, 0x04, 0xd5, 0x9b, 0x0e, 0x91, 0xef,
+	0x20, 0x73, 0xb0, 0x19, 0x52, 0xed, 0x7c, 0x3a, 0x44, 0xca, 0x83, 0xfa, 0x37, 0x05, 0x92, 0x52,
+	0xf1, 0x25, 0x06, 0xb9, 0x6c, 0x74, 0xb6, 0x2c, 0x6b, 0x81, 0xab, 0x99, 0xbc, 0x7f, 0x6d, 0x01,
+	0x19, 0x0f, 0x2a, 0x50, 0x57, 0x54, 0x10, 0xd6, 0x3a, 0x3e, 0xaf, 0x75, 0x70, 0x36, 0x89, 0xf0,
+	0xd9, 0x64, 0x21, 0xe6, 0x18, 0x13, 0x6d, 0x8d, 0xfb, 0xd8, 0xaf, 0xde, 0x80, 0x64, 0x58, 0xa9,
+	0xf6, 0x34, 0xb8, 0x7c, 0xfc, 0x9f, 0x6d, 0xab, 0x3d, 0x15, 0x07, 0x19, 0x6d, 0x4f, 0xd9, 0x8a,
+	0xe2, 0x0c, 0xc4, 0xd9, 0x49, 0x53, 0xff, 0xaa, 0x00, 0xcc, 0xee, 0xd5, 0x7f, 0x29, 0x3a, 0xd7,
+	0x8a, 0xb1, 0x7f, 0xb6, 0x22, 0xd9, 0x81, 0x84, 0xd1, 0xf1, 0x4c, 0xdb, 0xd2, 0x54, 0x0e, 0x4e,
+	0xfb, 0xe0, 0x0a, 0xf7, 0x51, 0x11, 0x63, 0x52, 0x98, 0x03, 0x56, 0xb0, 0x2f, 0x91, 0x6f, 0xb0,
+	0xb9, 0x15, 0x22, 0x5d, 0x2a, 0xb7, 0x00, 0x49, 0xd9, 0xa8, 0x62, 0xf7, 0x81, 0xbd, 0x42, 0x83,
+	0x67, 0x90, 0xf0, 0x17, 0x67, 0x5a, 0xf6, 0x4d, 0xeb, 0x46, 0xb4, 0x06, 0xff, 0x0f, 0xe7, 0x45,
+	0xe7, 0xf2, 0x76, 0x9f, 0x88, 0xb6, 0x62, 0x52, 0x90, 0x0d, 0x48, 0x9d, 0xb6, 0x8e, 0xdf, 0x5e,
+	0xd2, 0x7a, 0xa5, 0x96, 0x8d, 0x90, 0x6d, 0xc8, 0x35, 0x2e, 0x4e, 0x2a, 0xad, 0xcb, 0x66, 0xeb,
+	0xbc, 0x4e, 0x2b, 0xd5, 0xf3, 0xe6, 0x9b, 0x7a, 0x56, 0x39, 0xf8, 0x1c, 0x03, 0xb5, 0xee, 0xf4,
+	0x6c, 0xf2, 0x1c, 0xb2, 0x14, 0x7b, 0xa6, 0xeb, 0xa1, 0xd3, 0xc2, 0x09, 0xa7, 0x21, 0x61, 0x79,
+	0x59, 0xab, 0x16, 0xf2, 0x21, 0x87, 0xbc, 0xf4, 0x7a, 0x84, 0xbc, 0x82, 0x9c, 0xcc, 0x0d, 0xc6,
+	0x0b, 0x11, 0xd8, 0xb9, 0x79, 0x73, 0x37, 0x41, 0x5e, 0x8c, 0x30, 0x1e, 0x91, 0x13, 0x71, 0xcb,
+	0x47, 0xcf, 0xcf, 0xc9, 0xc2, 0xd2, 0xf0, 0xe1, 0x04, 0xf7, 0xe7, 0x09, 0x6a, 0x38, 0xc6, 0xbe,
+	0x3d, 0x44, 0x87, 0x90, 0x05, 0x92, 0x1a, 0x8e, 0x0b, 0x0b, 0x73, 0x4e, 0x8f, 0x90, 0x2a, 0xe4,
+	0x4f, 0x70, 0x60, 0x3b, 0xe6, 0x47, 0x9c, 0xcd, 0x7c, 0x97, 0xdc, 0xf3, 0x81, 0x8b, 0xcf, 0x40,
+	0x81, 0x2c, 0xdd, 0x27, 0x57, 0x8f, 0x90, 0x17, 0xb0, 0x4d, 0xb1, 0x83, 0xe6, 0x18, 0x65, 0x33,
+	0x9c, 0x5e, 0x31, 0x08, 0xc9, 0x05, 0x34, 0xf2, 0x85, 0x2b, 0x2c, 0xb4, 0xac, 0x1e, 0x39, 0xd4,
+	0x7e, 0xdc, 0x16, 0x95, 0x9f, 0xb7, 0x45, 0xe5, 0xd7, 0x6d, 0x51, 0xf9, 0xf2, 0xbb, 0x18, 0x79,
+	0x97, 0xf0, 0x1f, 0xca, 0x76, 0x82, 0xbf, 0x94, 0x4f, 0xff, 0x04, 0x00, 0x00, 0xff, 0xff, 0x5f,
+	0x4e, 0xce, 0x6b, 0x40, 0x07, 0x00, 0x00,
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// ErgoClient is the client API for Ergo service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type ErgoClient interface {
+	RegisterNewError(ctx context.Context, in *ErrorSeed, opts ...grpc.CallOption) (*ErrorInstance, error)
+	RegisterFullError(ctx context.Context, in *FullErrorSeed, opts ...grpc.CallOption) (*ErrorInstance, error)
+	ConsultErrorAsHuman(ctx context.Context, in *ConsultAsHuman, opts ...grpc.CallOption) (*ErrorHuman, error)
+	ConsultErrorAsDeveloper(ctx context.Context, in *ConsultAsDev, opts ...grpc.CallOption) (*ErrorDev, error)
+	// Save new messages
+	MemorizeNewMessages(ctx context.Context, in *NewMessageParams, opts ...grpc.CallOption) (*UserMessages, error)
+	// Save new feedback
+	ReceiveFeedbackOfUser(ctx context.Context, in *NewFeedBack, opts ...grpc.CallOption) (*Feedback, error)
+}
+
+type ergoClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewErgoClient(cc *grpc.ClientConn) ErgoClient {
+	return &ergoClient{cc}
+}
+
+func (c *ergoClient) RegisterNewError(ctx context.Context, in *ErrorSeed, opts ...grpc.CallOption) (*ErrorInstance, error) {
+	out := new(ErrorInstance)
+	err := c.cc.Invoke(ctx, "/ergo.Ergo/RegisterNewError", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ergoClient) RegisterFullError(ctx context.Context, in *FullErrorSeed, opts ...grpc.CallOption) (*ErrorInstance, error) {
+	out := new(ErrorInstance)
+	err := c.cc.Invoke(ctx, "/ergo.Ergo/RegisterFullError", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ergoClient) ConsultErrorAsHuman(ctx context.Context, in *ConsultAsHuman, opts ...grpc.CallOption) (*ErrorHuman, error) {
+	out := new(ErrorHuman)
+	err := c.cc.Invoke(ctx, "/ergo.Ergo/ConsultErrorAsHuman", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ergoClient) ConsultErrorAsDeveloper(ctx context.Context, in *ConsultAsDev, opts ...grpc.CallOption) (*ErrorDev, error) {
+	out := new(ErrorDev)
+	err := c.cc.Invoke(ctx, "/ergo.Ergo/ConsultErrorAsDeveloper", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ergoClient) MemorizeNewMessages(ctx context.Context, in *NewMessageParams, opts ...grpc.CallOption) (*UserMessages, error) {
+	out := new(UserMessages)
+	err := c.cc.Invoke(ctx, "/ergo.Ergo/MemorizeNewMessages", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ergoClient) ReceiveFeedbackOfUser(ctx context.Context, in *NewFeedBack, opts ...grpc.CallOption) (*Feedback, error) {
+	out := new(Feedback)
+	err := c.cc.Invoke(ctx, "/ergo.Ergo/ReceiveFeedbackOfUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ErgoServer is the server API for Ergo service.
+type ErgoServer interface {
+	RegisterNewError(context.Context, *ErrorSeed) (*ErrorInstance, error)
+	RegisterFullError(context.Context, *FullErrorSeed) (*ErrorInstance, error)
+	ConsultErrorAsHuman(context.Context, *ConsultAsHuman) (*ErrorHuman, error)
+	ConsultErrorAsDeveloper(context.Context, *ConsultAsDev) (*ErrorDev, error)
+	// Save new messages
+	MemorizeNewMessages(context.Context, *NewMessageParams) (*UserMessages, error)
+	// Save new feedback
+	ReceiveFeedbackOfUser(context.Context, *NewFeedBack) (*Feedback, error)
+}
+
+func RegisterErgoServer(s *grpc.Server, srv ErgoServer) {
+	s.RegisterService(&_Ergo_serviceDesc, srv)
+}
+
+func _Ergo_RegisterNewError_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ErrorSeed)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ErgoServer).RegisterNewError(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ergo.Ergo/RegisterNewError",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ErgoServer).RegisterNewError(ctx, req.(*ErrorSeed))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ergo_RegisterFullError_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FullErrorSeed)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ErgoServer).RegisterFullError(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ergo.Ergo/RegisterFullError",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ErgoServer).RegisterFullError(ctx, req.(*FullErrorSeed))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ergo_ConsultErrorAsHuman_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConsultAsHuman)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ErgoServer).ConsultErrorAsHuman(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ergo.Ergo/ConsultErrorAsHuman",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ErgoServer).ConsultErrorAsHuman(ctx, req.(*ConsultAsHuman))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ergo_ConsultErrorAsDeveloper_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConsultAsDev)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ErgoServer).ConsultErrorAsDeveloper(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ergo.Ergo/ConsultErrorAsDeveloper",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ErgoServer).ConsultErrorAsDeveloper(ctx, req.(*ConsultAsDev))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ergo_MemorizeNewMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewMessageParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ErgoServer).MemorizeNewMessages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ergo.Ergo/MemorizeNewMessages",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ErgoServer).MemorizeNewMessages(ctx, req.(*NewMessageParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ergo_ReceiveFeedbackOfUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewFeedBack)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ErgoServer).ReceiveFeedbackOfUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ergo.Ergo/ReceiveFeedbackOfUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ErgoServer).ReceiveFeedbackOfUser(ctx, req.(*NewFeedBack))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Ergo_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "ergo.Ergo",
+	HandlerType: (*ErgoServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "RegisterNewError",
+			Handler:    _Ergo_RegisterNewError_Handler,
+		},
+		{
+			MethodName: "RegisterFullError",
+			Handler:    _Ergo_RegisterFullError_Handler,
+		},
+		{
+			MethodName: "ConsultErrorAsHuman",
+			Handler:    _Ergo_ConsultErrorAsHuman_Handler,
+		},
+		{
+			MethodName: "ConsultErrorAsDeveloper",
+			Handler:    _Ergo_ConsultErrorAsDeveloper_Handler,
+		},
+		{
+			MethodName: "MemorizeNewMessages",
+			Handler:    _Ergo_MemorizeNewMessages_Handler,
+		},
+		{
+			MethodName: "ReceiveFeedbackOfUser",
+			Handler:    _Ergo_ReceiveFeedbackOfUser_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "schema/schema.proto",
+}
+
+func (m *NewFeedBack) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NewFeedBack) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.ErrorID) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.ErrorID)))
+		i += copy(dAtA[i:], m.ErrorID)
+	}
+	if len(m.Messages) > 0 {
+		for _, msg := range m.Messages {
+			dAtA[i] = 0x12
+			i++
+			i = encodeVarintSchema(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *UserMessages) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UserMessages) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Messages) > 0 {
+		for _, msg := range m.Messages {
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintSchema(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *NewMessageParams) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NewMessageParams) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.ErrorID) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.ErrorID)))
+		i += copy(dAtA[i:], m.ErrorID)
+	}
+	if len(m.Messages) > 0 {
+		for _, msg := range m.Messages {
+			dAtA[i] = 0x12
+			i++
+			i = encodeVarintSchema(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConsultAsHuman) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConsultAsHuman) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.ErrorID) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.ErrorID)))
+		i += copy(dAtA[i:], m.ErrorID)
+	}
+	if len(m.Languages) > 0 {
+		for _, s := range m.Languages {
+			dAtA[i] = 0x12
+			i++
+			l = len(s)
+			for l >= 1<<7 {
+				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
+				l >>= 7
+				i++
+			}
+			dAtA[i] = uint8(l)
+			i++
+			i += copy(dAtA[i:], s)
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConsultAsDev) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConsultAsDev) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.ErrorID) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.ErrorID)))
+		i += copy(dAtA[i:], m.ErrorID)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *FullErrorSeed) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *FullErrorSeed) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.AsDev != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(m.AsDev.Size()))
+		n1, err := m.AsDev.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n1
+	}
+	if m.AsHuman != nil {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(m.AsHuman.Size()))
+		n2, err := m.AsHuman.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n2
+	}
+	if m.WithFeedback {
+		dAtA[i] = 0x18
+		i++
+		if m.WithFeedback {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ErrorSeed) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ErrorSeed) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Where) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.Where)))
+		i += copy(dAtA[i:], m.Where)
+	}
+	if len(m.Explain) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.Explain)))
+		i += copy(dAtA[i:], m.Explain)
+	}
+	if len(m.MessageLanguage) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.MessageLanguage)))
+		i += copy(dAtA[i:], m.MessageLanguage)
+	}
+	if len(m.MessageContent) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(len(m.MessageContent)))
+		i += copy(dAtA[i:], m.MessageContent)
+	}
+	if m.WithFeedback {
+		dAtA[i] = 0x28
+		i++
+		if m.WithFeedback {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if m.Code != 0 {
+		dAtA[i] = 0x30
+		i++
+		i = encodeVarintSchema(dAtA, i, uint64(m.Code))
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
 }
 
 func (m *ErrorInstance) Marshal() (dAtA []byte, err error) {
@@ -783,6 +1754,163 @@ func encodeVarintSchema(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return offset + 1
 }
+func (m *NewFeedBack) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ErrorID)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	if len(m.Messages) > 0 {
+		for _, e := range m.Messages {
+			l = e.Size()
+			n += 1 + l + sovSchema(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *UserMessages) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Messages) > 0 {
+		for _, e := range m.Messages {
+			l = e.Size()
+			n += 1 + l + sovSchema(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *NewMessageParams) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ErrorID)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	if len(m.Messages) > 0 {
+		for _, e := range m.Messages {
+			l = e.Size()
+			n += 1 + l + sovSchema(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConsultAsHuman) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ErrorID)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	if len(m.Languages) > 0 {
+		for _, s := range m.Languages {
+			l = len(s)
+			n += 1 + l + sovSchema(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConsultAsDev) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ErrorID)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *FullErrorSeed) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.AsDev != nil {
+		l = m.AsDev.Size()
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	if m.AsHuman != nil {
+		l = m.AsHuman.Size()
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	if m.WithFeedback {
+		n += 2
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ErrorSeed) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Where)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	l = len(m.Explain)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	l = len(m.MessageLanguage)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	l = len(m.MessageContent)
+	if l > 0 {
+		n += 1 + l + sovSchema(uint64(l))
+	}
+	if m.WithFeedback {
+		n += 2
+	}
+	if m.Code != 0 {
+		n += 1 + sovSchema(uint64(m.Code))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
 func (m *ErrorInstance) Size() (n int) {
 	if m == nil {
 		return 0
@@ -957,6 +2085,850 @@ func sovSchema(x uint64) (n int) {
 }
 func sozSchema(x uint64) (n int) {
 	return sovSchema(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *NewFeedBack) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NewFeedBack: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NewFeedBack: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrorID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ErrorID = append(m.ErrorID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ErrorID == nil {
+				m.ErrorID = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Messages", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Messages = append(m.Messages, &Feedback{})
+			if err := m.Messages[len(m.Messages)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UserMessages) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UserMessages: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UserMessages: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Messages", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Messages = append(m.Messages, &UserMessage{})
+			if err := m.Messages[len(m.Messages)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NewMessageParams) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NewMessageParams: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NewMessageParams: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrorID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ErrorID = append(m.ErrorID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ErrorID == nil {
+				m.ErrorID = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Messages", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Messages = append(m.Messages, &UserMessage{})
+			if err := m.Messages[len(m.Messages)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConsultAsHuman) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConsultAsHuman: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConsultAsHuman: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrorID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ErrorID = append(m.ErrorID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ErrorID == nil {
+				m.ErrorID = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Languages", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Languages = append(m.Languages, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConsultAsDev) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConsultAsDev: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConsultAsDev: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrorID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ErrorID = append(m.ErrorID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ErrorID == nil {
+				m.ErrorID = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *FullErrorSeed) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: FullErrorSeed: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: FullErrorSeed: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AsDev", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AsDev == nil {
+				m.AsDev = &ErrorDev{}
+			}
+			if err := m.AsDev.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AsHuman", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AsHuman == nil {
+				m.AsHuman = &ErrorHuman{}
+			}
+			if err := m.AsHuman.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WithFeedback", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.WithFeedback = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ErrorSeed) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSchema
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ErrorSeed: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ErrorSeed: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Where", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Where = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Explain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Explain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MessageLanguage", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MessageLanguage = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MessageContent", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSchema
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MessageContent = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WithFeedback", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.WithFeedback = bool(v != 0)
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSchema
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSchema(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthSchema
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *ErrorInstance) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

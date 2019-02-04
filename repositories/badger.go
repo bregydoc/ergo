@@ -61,7 +61,16 @@ func (b *BadgerRepo) SaveNewError(seed *ergo.ErrorCreator) (*schema.ErrorInstanc
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 
-	newErrorID := ergo.UlidGen.New()
+	var newErrorID ulid.ULID
+	if seed.SuggestedID != nil {
+		var err error
+		newErrorID, err = ulid.Parse(string(seed.SuggestedID[0]))
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		newErrorID = ergo.UlidGen.New()
+	}
 
 	// First, create the instance
 	instance := &schema.ErrorInstance{

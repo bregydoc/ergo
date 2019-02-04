@@ -1,6 +1,7 @@
 package ergo
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/text/language"
 )
@@ -23,5 +24,7 @@ func (human *HumanBridge) CreateServer(address string) {
 		if err != nil {
 
 		}
+
+		fmt.Println(forHuman)
 	})
 }

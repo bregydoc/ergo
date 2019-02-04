@@ -1,0 +1,5 @@
+package ergo
+
+func RunService() {
+
+}

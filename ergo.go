@@ -2,6 +2,7 @@ package ergo
 
 import (
 	"math/rand"
+	"strings"
 
 	"github.com/bregydoc/ergo/schema"
 	"github.com/oklog/ulid"
@@ -23,15 +24,8 @@ type Ergo struct {
 }
 
 // RegisterNewError implements Wizard interface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, withFeedback bool, suggestedID ...[]byte) (*schema.ErrorInstance, error) {
+func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, withFeedback bool) (*schema.ErrorInstance, error) {
 	var finalCode = uint64(100 + rand.Int63n(300))
-
-	var sugID []byte
-	if len(suggestedID) != 0 {
-		sugID = suggestedID[0]
-	} else {
-		sugID = nil
-	}
 
 	eType := schema.ErrorType_ONLY_READ
 	if withFeedback {
@@ -50,7 +44,30 @@ func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, 
 			Message: "More information",
 			Link:    ergo.Opt.DefaultActionLink,
 		},
-		SuggestedID: sugID,
+	}
+
+	return ergo.Repo.SaveNewError(creator)
+}
+
+// RegisterNewErrorWithCode implements Wizard interface
+func (ergo *Ergo) RegisterNewErrorWithCode(where, explain string, code uint64, message *UserMessage, withFeedback bool) (*schema.ErrorInstance, error) {
+	eType := schema.ErrorType_ONLY_READ
+	if withFeedback {
+		eType = schema.ErrorType_HUMAN_INTERACTIVE
+	}
+
+	creator := &ErrorCreator{
+		Where:       where,
+		Explain:     explain,
+		Image:       ergo.Opt.DefaultImage,
+		Code:        code,
+		ErrorType:   eType,
+		Raw:         explain,
+		UserMessage: message,
+		Action: &Action{
+			Message: "More information",
+			Link:    ergo.Opt.DefaultActionLink,
+		},
 	}
 
 	return ergo.Repo.SaveNewError(creator)
@@ -65,14 +82,30 @@ func (ergo *Ergo) RegisterFullError(asDev *schema.ErrorDev, asHuman *schema.Erro
 func (ergo *Ergo) ConsultErrorAsHuman(errorID []byte, languages ...language.Tag) (*schema.ErrorHuman, error) {
 	var id ulid.ULID
 	copy(id[:], errorID)
-	return ergo.Repo.GetErrorForHuman(id, languages...)
+	forHuman, err := ergo.Repo.GetErrorForHuman(id, languages...)
+	if err != nil {
+		if strings.Contains(err.Error(), "found") {
+			return unknownErrorForHumans, nil
+		}
+		return nil, err
+	}
+
+	return forHuman, nil
 }
 
 // ConsultErrorAsDeveloper implements Wizard interface, then Ergo is a wizard, a wizard of your errors
 func (ergo *Ergo) ConsultErrorAsDeveloper(errorID []byte) (*schema.ErrorDev, error) {
 	var id ulid.ULID
 	copy(id[:], errorID)
-	return ergo.Repo.GetErrorForDev(id)
+	forDev, err := ergo.Repo.GetErrorForDev(id)
+	if err != nil {
+		if strings.Contains(err.Error(), "found") {
+			return unknownErrorForDevelopers, nil
+		}
+		return nil, err
+	}
+
+	return forDev, nil
 }
 
 // MemorizeNewMessages implements Wizard interface, then Ergo is a wizard, a wizard of your errors

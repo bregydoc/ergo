@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"encoding/binary"
 	"github.com/bregydoc/ergo"
 	"github.com/bregydoc/ergo/schema"
 	"github.com/dgraph-io/badger"
@@ -61,20 +62,23 @@ func (b *BadgerRepo) SaveNewError(seed *ergo.ErrorCreator) (*schema.ErrorInstanc
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 
-	var newErrorID ulid.ULID
-	if seed.SuggestedID != nil {
-		var err error
-		newErrorID, err = ulid.Parse(string(seed.SuggestedID[0]))
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		newErrorID = ergo.UlidGen.New()
+	newErrorID := ergo.UlidGen.New()
+
+	// --------- --------- ---------
+	// Early I'm going to register the code:ulid pair in the database
+	codeBin := make([]byte, 8)
+	binary.LittleEndian.PutUint64(codeBin, seed.Code)
+
+	err := txn.Set(codeBin, newErrorID[:])
+	if err != nil {
+		return nil, err
 	}
+	// --------- --------- ---------
 
 	// First, create the instance
 	instance := &schema.ErrorInstance{
 		Id:   newErrorID[:],
+		Code: seed.Code,
 		Type: seed.ErrorType,
 	}
 
@@ -258,6 +262,28 @@ func (b *BadgerRepo) GetErrorInstance(errorID ulid.ULID) (*schema.ErrorInstance,
 	}
 
 	return errorInstance, nil
+}
+
+// GetErrorInstanceByCode implements the Bag interface of Ergo
+func (b *BadgerRepo) GetErrorInstanceByCode(code uint64) (*schema.ErrorInstance, error) {
+	txn := b.db.NewTransaction(false)
+	defer txn.Discard()
+
+	codeBin := make([]byte, 8)
+	binary.LittleEndian.PutUint64(codeBin, code)
+
+	item, err := txn.Get(codeBin)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := item.ValueCopy(nil)
+	// data may will be the ulid
+	var id ulid.ULID
+	copy(id[:], data)
+
+	return b.GetErrorInstance(id)
+
 }
 
 // GetErrorForHuman implements the Bag interface of Ergo

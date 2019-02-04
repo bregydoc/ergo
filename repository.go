@@ -55,6 +55,7 @@ type Repository interface {
 	AddFeedbackToUser(errorID ulid.ULID, feedback *UserFeedback) (*schema.Feedback, error)
 
 	GetErrorInstance(errorID ulid.ULID) (*schema.ErrorInstance, error)
+	GetErrorInstanceByCode(code uint64) (*schema.ErrorInstance, error)
 	GetErrorForHuman(errorID ulid.ULID, languages ...language.Tag) (*schema.ErrorHuman, error)
 	GetErrorForDev(errorID ulid.ULID) (*schema.ErrorDev, error)
 

@@ -16,11 +16,11 @@ const Dev PersonType = 1
 
 // Wizard is a interface can to dialog with persons and retrieve data based on its requirements
 type Wizard interface {
-	RegisterNewError(where, explain string, message *UserMessage, withFeedback bool, suggestedID ...[]byte) (*schema.ErrorInstance, error)
+	RegisterNewError(where, explain string, message *UserMessage, withFeedback bool) (*schema.ErrorInstance, error)
+	RegisterNewErrorWithCode(where, explain string, code uint64, message *UserMessage, withFeedback bool) (*schema.ErrorInstance, error)
 	RegisterFullError(asDev *schema.ErrorDev, asHuman *schema.ErrorHuman, withFeedback bool) (*schema.ErrorInstance, error)
 	ConsultErrorAsHuman(errorID []byte, languages ...language.Tag) (*schema.ErrorHuman, error)
 	ConsultErrorAsDeveloper(errorID []byte) (*schema.ErrorDev, error)
-
 	// Save new messages
 	MemorizeNewMessages(errorID []byte, messages ...*UserMessage) ([]*schema.UserMessage, error)
 	// Save new feedback

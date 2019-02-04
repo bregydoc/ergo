@@ -65,7 +65,8 @@ message ErrorSeed {
 
 message ErrorInstance { // This message will be stored in the Repo
     bytes id = 1;
-    ErrorType type = 2;
+    uint64 code = 2;
+    ErrorType type = 3;
 }
 
 // ERROR FOR DEVS

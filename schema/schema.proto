@@ -27,7 +27,7 @@ service Ergo {
 
 message NewFeedBack {
     bytes errorID = 1;
-    repeated Feedback messages = 2;
+    Feedback feedback = 2;
 }
 
 message UserMessages {
@@ -36,7 +36,8 @@ message UserMessages {
 
 message NewMessageParams {
     bytes errorID = 1;
-    repeated UserMessage messages = 2;
+    bool withAutoTranslate = 2;
+    repeated UserMessage messages = 3;
 }
 
 message ConsultAsHuman {

@@ -9,10 +9,14 @@ import (
 const defaultImage = "https://pass.idbi.pe/static/img/idpass.png"
 
 // NewDefaultErgo ...
-func NewDefaultErgoWithBadger() (*ergo.Ergo, error) {
-	temp := "./temp"
+func NewDefaultErgoWithBadger(dir ...string) (*ergo.Ergo, error) {
+	finalDir := "./temp"
 
-	repo, err := repositories.NewBadgerRepo(temp, temp)
+	if len(dir) != 0 {
+		finalDir = dir[0]
+	}
+
+	repo, err := repositories.NewBadgerRepo(finalDir, finalDir)
 	if err != nil {
 		return nil, err
 	}

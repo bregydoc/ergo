@@ -1,31 +1,16 @@
 syntax = "proto3";
 
-package ergo;
+package schema;
 
-// import "google/protobuf/";
-
-
-option go_package = "schema";
-
+option go_package = "github.com/bregydoc/ergo/schema";
 
 enum ErrorType {
     ONLY_READ = 0;
     HUMAN_INTERACTIVE = 1;
 }
 
-service Ergo {
-    rpc RegisterNewError(ErrorSeed) returns (ErrorInstance) {}
-	rpc RegisterFullError(FullErrorSeed) returns (ErrorInstance) {}
-	rpc ConsultErrorAsHuman(ConsultAsHuman) returns (ErrorHuman) {}
-	rpc ConsultErrorAsDeveloper(ConsultAsDev) returns (ErrorDev) {}
-
-	// Save new messages
-	rpc MemorizeNewMessages(NewMessageParams) returns (UserMessages) {}
-	// Save new feedback
-	rpc ReceiveFeedbackOfUser(NewFeedBack) returns (Feedback) {}
-}
-
 message NewFeedBack {
+
     bytes errorID = 1;
     Feedback feedback = 2;
 }

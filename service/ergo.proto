@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package ergocon;
+
+import "schema/schema.proto";
+
+option go_package = "ergocon";
+
+service Ergo {
+    rpc RegisterNewError(schema.ErrorSeed) returns (schema.ErrorInstance) {}
+    rpc RegisterFullError(schema.FullErrorSeed) returns (schema.ErrorInstance) {}
+    rpc ConsultErrorAsHuman(schema.ConsultAsHuman) returns (schema.ErrorHuman) {}
+    rpc ConsultErrorAsDeveloper(schema.ConsultAsDev) returns (schema.ErrorDev) {}
+
+    // Save new messages
+    rpc MemorizeNewMessages(schema.NewMessageParams) returns (schema.UserMessages) {}
+    // Save new feedback
+    rpc ReceiveFeedbackOfUser(schema.NewFeedBack) returns (schema.Feedback) {}
+}

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/bregydoc/ergo"
 	"github.com/bregydoc/ergo/creators"
-	"github.com/bregydoc/ergo/schema"
+	"github.com/bregydoc/ergo/service"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"log"
@@ -30,7 +30,7 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 
-	schema.RegisterErgoServer(grpcServer, server)
+	ergocon.RegisterErgoServer(grpcServer, server)
 
 	go func() {
 		log.Printf("[For Developers] listening on :%d\n", *devPort)

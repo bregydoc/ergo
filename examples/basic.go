@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/bregydoc/ergo"
 	"github.com/bregydoc/ergo/creators"
-	"github.com/k0kubun/pp"
 	"golang.org/x/text/language"
 )
 
@@ -14,20 +13,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	// where := devs.TraceError()
-	//
-	// instance, err := e.RegisterNewError(where,
-	// 	http.ErrAbortHandler.Error(),
-	// 	&ergo.UserMessage{Message:"Error abort handle", Language:language.English},
-	// 	false,
-	// )
-	//
-	// if err != nil {
-	// 	panic(err)
-	// }
 
 	id := []byte{0x00, 0x00, 0x3b, 0x9a, 0xca, 0x00, 0xa5, 0xe5, 0x15, 0xbc, 0x97, 0xe8, 0x5c, 0xf6, 0x9b, 0xc3}
-	messages, err := e.MemorizeNewMessages(id, true,
+	_, err = e.MemorizeNewMessages(id, true,
 		&ergo.UserMessage{Language: language.Spanish},
 		&ergo.UserMessage{Language: language.Japanese},
 		&ergo.UserMessage{Language: language.Korean},
@@ -37,7 +25,6 @@ func main() {
 		panic(err)
 	}
 
-	pp.Println(messages)
 	forHuman, err := e.ConsultErrorAsHuman(id, language.English, language.Spanish, language.Japanese, language.Korean, language.Afrikaans)
 	if err != nil {
 		panic(err)

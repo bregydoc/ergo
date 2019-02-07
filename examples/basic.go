@@ -3,12 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/bregydoc/ergo"
 	"github.com/bregydoc/ergo/creators"
 	"golang.org/x/text/language"
 )
 
-func main() {
+func mai1n() {
 	e, err := creators.NewDefaultErgoWithBadger()
 	if err != nil {
 		panic(err)
@@ -25,7 +26,7 @@ func main() {
 		panic(err)
 	}
 
-	forHuman, err := e.ConsultErrorAsHuman(id, language.English, language.Spanish, language.Japanese, language.Korean, language.Afrikaans)
+	forHuman, err := e.ConsultErrorAsHumanByID(id, language.English, language.Spanish, language.Japanese, language.Korean, language.Afrikaans)
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +34,7 @@ func main() {
 	s, _ := json.MarshalIndent(forHuman, "", "\t")
 	fmt.Println(string(s))
 
-	forDev, err := e.ConsultErrorAsDeveloper(id)
+	forDev, err := e.ConsultErrorAsDeveloperByID(id)
 	if err != nil {
 		panic(err)
 	}

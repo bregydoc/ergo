@@ -59,10 +59,16 @@ type Repository interface {
 	GetErrorForHuman(errorID ulid.ULID, languages ...language.Tag) (*schema.ErrorHuman, error)
 	GetErrorForDev(errorID ulid.ULID) (*schema.ErrorDev, error)
 
+	GetAllErrorInstances() ([]*schema.ErrorInstance, error)
+	GetAllErrorsForDev() ([]*schema.ErrorDev, error)
+
 	// UpdateError returns a ErrorDev cause I understand who call this method is a dev
 	UpdateError(errorID ulid.ULID, update *ErrorUpdate) (*schema.ErrorDev, error)
 	DeleteError(errorID ulid.ULID) error
 
 	// Temporal
 	SetOneMessageError(errorID ulid.ULID, language language.Tag, message string) (*schema.UserMessage, error)
+
+	//Synthetic events
+	OnNewErrorHasBeenSaved(callback func(value *schema.ErrorInstance)) error
 }

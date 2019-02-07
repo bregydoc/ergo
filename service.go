@@ -2,6 +2,7 @@ package ergo
 
 import (
 	"context"
+
 	"github.com/bregydoc/ergo/schema"
 	"github.com/oklog/ulid"
 	"golang.org/x/text/language"
@@ -23,15 +24,29 @@ func (s *Server) RegisterNewError(c context.Context, params *schema.ErrorSeed) (
 		return nil, err
 	}
 
-	return s.ergo.RegisterNewError(
+	if params.Code == 0 || int64(params.Code) < 0 {
+		// Register with random code...
+		return s.ergo.RegisterNewError(
+			params.Where,
+			params.Explain,
+			&UserMessage{
+				Language: langMessage,
+				Message:  params.MessageContent,
+			},
+			params.WithFeedback,
+		)
+	}
+	return s.ergo.RegisterNewErrorWithCode(
 		params.Where,
 		params.Explain,
+		params.Code,
 		&UserMessage{
 			Language: langMessage,
 			Message:  params.MessageContent,
 		},
 		params.WithFeedback,
 	)
+
 }
 
 func (s *Server) RegisterFullError(c context.Context, params *schema.FullErrorSeed) (*schema.ErrorInstance, error) {
@@ -47,11 +62,11 @@ func (s *Server) ConsultErrorAsHuman(c context.Context, params *schema.ConsultAs
 		}
 		languages = append(languages, fLang)
 	}
-	return s.ergo.ConsultErrorAsHuman(params.ErrorID, languages...)
+	return s.ergo.ConsultErrorAsHumanByID(params.ErrorID, languages...)
 }
 
 func (s *Server) ConsultErrorAsDeveloper(c context.Context, params *schema.ConsultAsDev) (*schema.ErrorDev, error) {
-	return s.ergo.ConsultErrorAsDeveloper(params.ErrorID)
+	return s.ergo.ConsultErrorAsDeveloperByID(params.ErrorID)
 }
 
 // Save new messages

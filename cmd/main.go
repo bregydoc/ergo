@@ -3,13 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/bregydoc/ergo"
-	"github.com/bregydoc/ergo/creators"
-	"github.com/bregydoc/ergo/service"
-	"github.com/gin-gonic/gin"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	"github.com/bregydoc/ergo"
+	"github.com/bregydoc/ergo/client"
+	"github.com/bregydoc/ergo/creators"
+	ergocon "github.com/bregydoc/ergo/service"
+	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -22,6 +24,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	// Ergo Engine
 	server := ergo.NewErgoServer(e)
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *devPort))
 	if err != nil {
@@ -33,7 +37,7 @@ func main() {
 	ergocon.RegisterErgoServer(grpcServer, server)
 
 	go func() {
-		log.Printf("[For Developers] listening on :%d\n", *devPort)
+		log.Printf("[For Developers] GRPC listening on :%d\n", *devPort)
 		err = grpcServer.Serve(lis)
 		if err != nil {
 			panic(err)
@@ -42,14 +46,23 @@ func main() {
 
 	// Human Bridge
 	gin.SetMode(gin.ReleaseMode)
-	engine := gin.Default()
+	humanEngine := gin.Default()
+	bridge := ergo.NewHumanBridge(humanEngine, e)
 
-	bridge := ergo.NewHumanBridge(engine, e)
+	go func() {
+		log.Printf("[For Humans] Human Wizard listening on :%d\n", *humanPort)
+		err = bridge.LaunchServerForHumans(fmt.Sprintf(":%d", *humanPort))
+		if err != nil {
+			panic(err)
+		}
+	}()
 
-	log.Printf("[For Humans] listening on :%d\n", *humanPort)
-	err = bridge.LaunchServerForHumans(fmt.Sprintf(":%d", *humanPort))
+	// UI Bridge
+	uiEngine := gin.Default()
+	ui := client.NewErgoUI(uiEngine, e)
+	log.Printf("[For Developers] UI listening on :5000\n")
+	err = ui.LaunchUIClientForDevelopers(":5000")
 	if err != nil {
 		panic(err)
 	}
-
 }

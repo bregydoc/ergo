@@ -1,6 +1,7 @@
 package ergo
 
 import (
+	"fmt"
 	"io"
 	"math/rand"
 	"time"
@@ -14,11 +15,15 @@ type gen struct {
 }
 
 func (g *gen) New() ulid.ULID {
-	return ulid.MustNew(ulid.Timestamp(g.t), g.entropy)
+	id := ulid.MustNew(ulid.Timestamp(g.t), g.entropy)
+	fmt.Println(id.String())
+	return id
 }
+
+var t = time.Unix(1000000, 0)
 
 // UlidGen is a gen instance to create serial ulids
 var UlidGen = gen{
-	t:       time.Unix(1000000, 0),
-	entropy: ulid.Monotonic(rand.New(rand.NewSource(time.Unix(1000000, 0).UnixNano())), 0),
+	t:       t,
+	entropy: ulid.Monotonic(rand.New(rand.NewSource(t.UnixNano())), 0),
 }

@@ -19,8 +19,10 @@ type Wizard interface {
 	RegisterNewError(where, explain string, message *UserMessage, withFeedback bool) (*schema.ErrorInstance, error)
 	RegisterNewErrorWithCode(where, explain string, code uint64, message *UserMessage, withFeedback bool) (*schema.ErrorInstance, error)
 	RegisterFullError(asDev *schema.ErrorDev, asHuman *schema.ErrorHuman, withFeedback bool) (*schema.ErrorInstance, error)
-	ConsultErrorAsHuman(errorID []byte, languages ...language.Tag) (*schema.ErrorHuman, error)
-	ConsultErrorAsDeveloper(errorID []byte) (*schema.ErrorDev, error)
+	ConsultErrorAsHumanByID(errorID []byte, languages ...language.Tag) (*schema.ErrorHuman, error)
+	ConsultErrorAsDeveloperByID(errorID []byte) (*schema.ErrorDev, error)
+	ConsultErrorAsHumanByCode(code uint64, languages ...language.Tag) (*schema.ErrorHuman, error)
+	ConsultErrorAsDeveloperByCode(code uint64) (*schema.ErrorDev, error)
 	// Save new messages
 	MemorizeNewMessages(errorID []byte, withAutoTranslate bool, messages ...*UserMessage) ([]*schema.UserMessage, error)
 	// Save new feedback

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"encoding/binary"
+
 	"github.com/bregydoc/ergo"
 	"github.com/bregydoc/ergo/schema"
 	"github.com/dgraph-io/badger"
@@ -10,22 +11,29 @@ import (
 	"golang.org/x/text/language"
 )
 
+/*
 var instanceSuffix = []byte("instance")
 var devSuffix = []byte("dev")
 var humanSuffix = []byte("human")
 
 var languagePrefix = []byte("lang")
+*/
+var instancePrefix = []byte("instance")
+var devPrefix = []byte("dev")
+var humanPrefix = []byte("human")
+
+var languagePrefix = []byte("lang")
 
 func getErrorInstanceID(id ulid.ULID) []byte {
-	return append(id[:], instanceSuffix...)
+	return append(instancePrefix, id[:]...)
 }
 
 func getErrorDevID(id ulid.ULID) []byte {
-	return append(id[:], devSuffix...)
+	return append(devPrefix, id[:]...)
 }
 
 func getErrorHumanID(id ulid.ULID) []byte {
-	return append(id[:], humanSuffix...)
+	return append(humanPrefix, id[:]...)
 }
 
 func getErrorMessageLanguageID(errorID ulid.ULID, lang language.Tag) []byte {
@@ -35,7 +43,8 @@ func getErrorMessageLanguageID(errorID ulid.ULID, lang language.Tag) []byte {
 
 // BadgerRepo implement ergo repo
 type BadgerRepo struct {
-	db *badger.DB
+	db                     *badger.DB
+	onNewErrorHasBeenSaved *func(value *schema.ErrorInstance)
 }
 
 // NewBadgerRepo returns a new repo with Badger as a backend
@@ -155,6 +164,14 @@ func (b *BadgerRepo) SaveNewError(seed *ergo.ErrorCreator) (*schema.ErrorInstanc
 	if err != nil {
 		return nil, err
 	}
+	// If the error was registered successfully
+	// launch callback
+	go func() {
+		if b.onNewErrorHasBeenSaved != nil {
+			callback := *b.onNewErrorHasBeenSaved
+			callback(instance)
+		}
+	}()
 
 	return instance, nil
 }
@@ -363,6 +380,72 @@ func (b *BadgerRepo) GetErrorForDev(errorID ulid.ULID) (*schema.ErrorDev, error)
 	return errorDev, nil
 }
 
+// GetAllErrorInstances implements the Bag interface of Ergo
+func (b *BadgerRepo) GetAllErrorInstances() ([]*schema.ErrorInstance, error) {
+	txn := b.db.NewTransaction(false)
+	defer txn.Discard()
+
+	iter := txn.NewIterator(badger.IteratorOptions{
+		Prefix:         instancePrefix,
+		PrefetchValues: true,
+	})
+
+	defer iter.Close()
+
+	instances := make([]*schema.ErrorInstance, 0)
+	for iter.Rewind(); iter.Valid(); iter.Next() {
+		item := iter.Item()
+		data, err := item.ValueCopy(nil)
+		if err != nil {
+			return nil, err
+		}
+
+		var inst schema.ErrorInstance
+
+		err = proto.Unmarshal(data, &inst)
+		if err != nil {
+			return nil, err
+		}
+
+		instances = append(instances, &inst)
+	}
+
+	return instances, nil
+}
+
+// GetAllErrorsForDev implements the Bag interface of Ergo
+func (b *BadgerRepo) GetAllErrorsForDev() ([]*schema.ErrorDev, error) {
+	txn := b.db.NewTransaction(false)
+	defer txn.Discard()
+
+	iter := txn.NewIterator(badger.IteratorOptions{
+		Prefix:         devPrefix,
+		PrefetchValues: true,
+	})
+
+	defer iter.Close()
+
+	errorsForDev := make([]*schema.ErrorDev, 0)
+	for iter.Rewind(); iter.Valid(); iter.Next() {
+		item := iter.Item()
+		data, err := item.ValueCopy(nil)
+		if err != nil {
+			return nil, err
+		}
+
+		var dev schema.ErrorDev
+
+		err = proto.Unmarshal(data, &dev)
+		if err != nil {
+			return nil, err
+		}
+
+		errorsForDev = append(errorsForDev, &dev)
+	}
+
+	return errorsForDev, nil
+}
+
 // UpdateError implements the Bag interface of Ergo
 func (b *BadgerRepo) UpdateError(errorID ulid.ULID, update *ergo.ErrorUpdate) (*schema.ErrorDev, error) {
 	panic("unimplemented")
@@ -428,4 +511,10 @@ func (b *BadgerRepo) SetOneMessageError(errorID ulid.ULID, language language.Tag
 	}
 
 	return m, nil
+}
+
+// OnNewErrorHasBeenSaved implements the Bag interface of Ergo
+func (b *BadgerRepo) OnNewErrorHasBeenSaved(callback func(value *schema.ErrorInstance)) error {
+	b.onNewErrorHasBeenSaved = &callback
+	return nil
 }

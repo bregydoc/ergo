@@ -6,6 +6,7 @@ import (
 
 	"github.com/bregydoc/ergo"
 	"github.com/bregydoc/ergo/creators"
+	"github.com/oklog/ulid"
 	"golang.org/x/text/language"
 )
 
@@ -15,8 +16,9 @@ func mai1n() {
 		panic(err)
 	}
 
-	id := []byte{0x00, 0x00, 0x3b, 0x9a, 0xca, 0x00, 0xa5, 0xe5, 0x15, 0xbc, 0x97, 0xe8, 0x5c, 0xf6, 0x9b, 0xc3}
-	_, err = e.MemorizeNewMessages(id, true,
+	id := ulid.ULID{0x00, 0x00, 0x3b, 0x9a, 0xca, 0x00, 0xa5, 0xe5, 0x15, 0xbc, 0x97, 0xe8, 0x5c, 0xf6, 0x9b, 0xc3}
+
+	_, err = e.MemorizeNewMessages(id.String(), true,
 		&ergo.UserMessage{Language: language.Spanish},
 		&ergo.UserMessage{Language: language.Japanese},
 		&ergo.UserMessage{Language: language.Korean},

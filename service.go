@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/bregydoc/ergo/schema"
-	"github.com/oklog/ulid"
 	"golang.org/x/text/language"
 )
 
@@ -90,14 +89,11 @@ func (s *Server) MemorizeNewMessages(c context.Context, params *schema.NewMessag
 	}, nil
 }
 
-// Save new feedback
+// ReceiveFeedbackOfUser saves new feedback
 func (s *Server) ReceiveFeedbackOfUser(c context.Context, params *schema.NewFeedBack) (*schema.Feedback, error) {
-	var byID ulid.ULID
-	copy(byID[:], params.Feedback.ByID)
-
 	return s.ergo.ReceiveFeedbackOfUser(params.ErrorID, &UserFeedback{
 		Message: params.Feedback.Message,
 		By:      params.Feedback.By,
-		ByID:    byID,
+		ByID:    params.Feedback.ByID,
 	})
 }

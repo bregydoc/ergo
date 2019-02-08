@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package schema;
 
+// You need to change the next line to compile it
+// option go_package = "schema";
 option go_package = "github.com/bregydoc/ergo/schema";
 
 enum ErrorType {
@@ -10,8 +12,7 @@ enum ErrorType {
 }
 
 message NewFeedBack {
-
-    bytes errorID = 1;
+    string errorID = 1;
     Feedback feedback = 2;
 }
 
@@ -20,18 +21,18 @@ message UserMessages {
 }
 
 message NewMessageParams {
-    bytes errorID = 1;
+    string errorID = 1;
     bool withAutoTranslate = 2;
     repeated UserMessage messages = 3;
 }
 
 message ConsultAsHuman {
-    bytes errorID = 1;
+    string errorID = 1;
     repeated string languages = 2;
 }
 
 message ConsultAsDev {
-    bytes errorID = 1;
+    string errorID = 1;
 }
 
 message FullErrorSeed {
@@ -50,14 +51,14 @@ message ErrorSeed {
 }
 
 message ErrorInstance { // This message will be stored in the Repo
-    bytes id = 1;
+    string id = 1;
     uint64 code = 2;
     ErrorType type = 3;
 }
 
 // ERROR FOR DEVS
 message ErrorDev { // This message will be stored in the Repo
-    bytes id = 1;
+    string id = 1;
     uint64 code = 2;
     repeated Feedback feedback = 3;
     ErrorType type = 4;
@@ -67,14 +68,14 @@ message ErrorDev { // This message will be stored in the Repo
 }
 
 message Feedback {
-    bytes byID = 1;
+    string byID = 1;
     string by = 2;
     string message = 3;
 }
 
 // HOW IS AN ERROR FOR HUMANS:
 message ErrorHuman { // This message will be stored in the Repo
-    bytes id = 1;
+    string id = 1;
     ErrorType type = 2;
     repeated UserMessage messages = 3; // That is filled at the moment
     repeated Action action  = 4; // That is filled at the moment
@@ -82,7 +83,7 @@ message ErrorHuman { // This message will be stored in the Repo
 }
 
 message UserMessage { // This message will be stored in the Repo
-    bytes id = 1;
+    string id = 1;
     string language = 2;
     string message = 3;
 }

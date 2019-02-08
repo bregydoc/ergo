@@ -7,37 +7,29 @@ import (
 	"github.com/bregydoc/ergo/schema"
 	"github.com/dgraph-io/badger"
 	"github.com/gogo/protobuf/proto"
-	"github.com/oklog/ulid"
 	"golang.org/x/text/language"
 )
 
-/*
-var instanceSuffix = []byte("instance")
-var devSuffix = []byte("dev")
-var humanSuffix = []byte("human")
-
-var languagePrefix = []byte("lang")
-*/
 var instancePrefix = []byte("instance")
 var devPrefix = []byte("dev")
 var humanPrefix = []byte("human")
 
 var languagePrefix = []byte("lang")
 
-func getErrorInstanceID(id ulid.ULID) []byte {
-	return append(instancePrefix, id[:]...)
+func getErrorInstanceID(id string) []byte {
+	return append(instancePrefix, []byte(id)...)
 }
 
-func getErrorDevID(id ulid.ULID) []byte {
-	return append(devPrefix, id[:]...)
+func getErrorDevID(id string) []byte {
+	return append(devPrefix, []byte(id)...)
 }
 
-func getErrorHumanID(id ulid.ULID) []byte {
-	return append(humanPrefix, id[:]...)
+func getErrorHumanID(id string) []byte {
+	return append(humanPrefix, []byte(id)...)
 }
 
-func getErrorMessageLanguageID(errorID ulid.ULID, lang language.Tag) []byte {
-	c := append(errorID[:], []byte(lang.String())...)
+func getErrorMessageLanguageID(errorID string, lang language.Tag) []byte {
+	c := append([]byte(errorID), []byte(lang.String())...)
 	return append(languagePrefix, c...)
 }
 
@@ -71,14 +63,14 @@ func (b *BadgerRepo) SaveNewError(seed *ergo.ErrorCreator) (*schema.ErrorInstanc
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 
-	newErrorID := ergo.UlidGen.New()
+	newErrorID := ergo.UlidGen.New().String()
 
 	// --------- --------- ---------
-	// Early I'm going to register the code:ulid pair in the database
+	// On early step I'm going to register the code:ulid pair in the database
 	codeBin := make([]byte, 8)
 	binary.LittleEndian.PutUint64(codeBin, seed.Code)
 
-	err := txn.Set(codeBin, newErrorID[:])
+	err := txn.Set(codeBin, []byte(newErrorID))
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +78,7 @@ func (b *BadgerRepo) SaveNewError(seed *ergo.ErrorCreator) (*schema.ErrorInstanc
 
 	// First, create the instance
 	instance := &schema.ErrorInstance{
-		Id:   newErrorID[:],
+		Id:   newErrorID,
 		Code: seed.Code,
 		Type: seed.ErrorType,
 	}
@@ -103,7 +95,7 @@ func (b *BadgerRepo) SaveNewError(seed *ergo.ErrorCreator) (*schema.ErrorInstanc
 
 	// Second, generate the dev error
 	dev := &schema.ErrorDev{
-		Id:       newErrorID[:],
+		Id:       newErrorID,
 		Type:     seed.ErrorType,
 		Code:     seed.Code,
 		Explain:  seed.Explain,
@@ -177,13 +169,13 @@ func (b *BadgerRepo) SaveNewError(seed *ergo.ErrorCreator) (*schema.ErrorInstanc
 }
 
 // RegisterNewUserMessage implements the Bag interface of Ergo
-func (b *BadgerRepo) RegisterNewUserMessage(errorID ulid.ULID, uMessage *ergo.UserMessage) (*schema.UserMessage, error) {
+func (b *BadgerRepo) RegisterNewUserMessage(errorID string, uMessage *ergo.UserMessage) (*schema.UserMessage, error) {
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 
 	mID := getErrorMessageLanguageID(errorID, uMessage.Language)
 	m := &schema.UserMessage{
-		Id:       errorID[:],
+		Id:       errorID,
 		Language: uMessage.Language.String(),
 		Message:  uMessage.Message,
 	}
@@ -207,11 +199,11 @@ func (b *BadgerRepo) RegisterNewUserMessage(errorID ulid.ULID, uMessage *ergo.Us
 }
 
 // AddFeedbackToUser implements the Bag interface of Ergo
-func (b *BadgerRepo) AddFeedbackToUser(errorID ulid.ULID, feedback *ergo.UserFeedback) (*schema.Feedback, error) {
+func (b *BadgerRepo) AddFeedbackToUser(errorID string, feedback *ergo.UserFeedback) (*schema.Feedback, error) {
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 
-	item, err := txn.Get(errorID[:])
+	item, err := txn.Get(getErrorDevID(errorID))
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +236,7 @@ func (b *BadgerRepo) AddFeedbackToUser(errorID ulid.ULID, feedback *ergo.UserFee
 	}
 	// ** Marshal-Unmarshal process **
 
-	err = txn.Set(errorID[:], dataError)
+	err = txn.Set(getErrorDevID(errorID), dataError)
 	if err != nil {
 		return nil, err
 	}
@@ -258,7 +250,7 @@ func (b *BadgerRepo) AddFeedbackToUser(errorID ulid.ULID, feedback *ergo.UserFee
 }
 
 // GetErrorInstance implements the Bag interface of Ergo
-func (b *BadgerRepo) GetErrorInstance(errorID ulid.ULID) (*schema.ErrorInstance, error) {
+func (b *BadgerRepo) GetErrorInstance(errorID string) (*schema.ErrorInstance, error) {
 	txn := b.db.NewTransaction(false)
 	defer txn.Discard()
 
@@ -295,16 +287,14 @@ func (b *BadgerRepo) GetErrorInstanceByCode(code uint64) (*schema.ErrorInstance,
 	}
 
 	data, err := item.ValueCopy(nil)
-	// data may will be the ulid
-	var id ulid.ULID
-	copy(id[:], data)
+	// data may will be the stringify ulid
 
-	return b.GetErrorInstance(id)
+	return b.GetErrorInstance(string(data))
 
 }
 
 // GetErrorForHuman implements the Bag interface of Ergo
-func (b *BadgerRepo) GetErrorForHuman(errorID ulid.ULID, languages ...language.Tag) (*schema.ErrorHuman, error) {
+func (b *BadgerRepo) GetErrorForHuman(errorID string, languages ...language.Tag) (*schema.ErrorHuman, error) {
 	txn := b.db.NewTransaction(false)
 	defer txn.Discard()
 
@@ -357,7 +347,7 @@ func (b *BadgerRepo) GetErrorForHuman(errorID ulid.ULID, languages ...language.T
 }
 
 // GetErrorForDev implements the Bag interface of Ergo
-func (b *BadgerRepo) GetErrorForDev(errorID ulid.ULID) (*schema.ErrorDev, error) {
+func (b *BadgerRepo) GetErrorForDev(errorID string) (*schema.ErrorDev, error) {
 	txn := b.db.NewTransaction(false)
 	defer txn.Discard()
 
@@ -380,8 +370,8 @@ func (b *BadgerRepo) GetErrorForDev(errorID ulid.ULID) (*schema.ErrorDev, error)
 	return errorDev, nil
 }
 
-// GetAllErrorInstances implements the Bag interface of Ergo
-func (b *BadgerRepo) GetAllErrorInstances() ([]*schema.ErrorInstance, error) {
+// GetAllRegisteredErrors implements the Bag interface of Ergo
+func (b *BadgerRepo) GetAllRegisteredErrors() ([]*schema.ErrorInstance, error) {
 	txn := b.db.NewTransaction(false)
 	defer txn.Discard()
 
@@ -446,14 +436,79 @@ func (b *BadgerRepo) GetAllErrorsForDev() ([]*schema.ErrorDev, error) {
 	return errorsForDev, nil
 }
 
+// GetAllErrorsForUI implements the Bag interface of Ergo
+func (b *BadgerRepo) GetAllErrorsForUI() ([]*ergo.ErrorSummary, error) {
+	txn := b.db.NewTransaction(false)
+	defer txn.Discard()
+
+	iter := txn.NewIterator(badger.IteratorOptions{
+		Prefix:         instancePrefix,
+		PrefetchValues: true,
+	})
+
+	defer iter.Close()
+
+	allErrors := make([]*ergo.ErrorSummary, 0)
+	for iter.Rewind(); iter.Valid(); iter.Next() {
+		instanceItem := iter.Item()
+		data, err := instanceItem.ValueCopy(nil)
+		if err != nil {
+			return nil, err
+		}
+		instance := new(schema.ErrorInstance)
+		err = proto.Unmarshal(data, instance)
+		if err != nil {
+			return nil, err
+		}
+
+		forHuman, err := b.GetErrorForHuman(instance.Id, language.English)
+		if err != nil {
+			return nil, err
+		}
+
+		forDev, err := b.GetErrorForDev(instance.Id)
+		if err != nil {
+			return nil, err
+		}
+		action := &schema.Action{
+			Link:    "",
+			Message: "",
+		}
+
+		if len(forHuman.Action) > 0 {
+			action = forHuman.Action[0]
+		}
+
+		message := ""
+		if len(forHuman.Messages) > 0 {
+			message = forHuman.Messages[0].Message
+		}
+
+		e := &ergo.ErrorSummary{
+			ID:                 instance.Id,
+			Code:               instance.Code,
+			Explain:            forDev.Explain,
+			Image:              forHuman.Image,
+			ActionLink:         action.Link,
+			ActionMessage:      action.Message,
+			EnglishUserMessage: message,
+			Type:               forDev.Type.String(),
+		}
+
+		allErrors = append(allErrors, e)
+	}
+
+	return allErrors, nil
+}
+
 // UpdateError implements the Bag interface of Ergo
-func (b *BadgerRepo) UpdateError(errorID ulid.ULID, update *ergo.ErrorUpdate) (*schema.ErrorDev, error) {
+func (b *BadgerRepo) UpdateError(errorID string, update *ergo.ErrorUpdate) (*schema.ErrorDev, error) {
 	panic("unimplemented")
 	// return nil, nil
 }
 
 // DeleteError implements the Bag interface of Ergo
-func (b *BadgerRepo) DeleteError(errorID ulid.ULID) error {
+func (b *BadgerRepo) DeleteError(errorID string) error {
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 
@@ -484,7 +539,7 @@ func (b *BadgerRepo) DeleteError(errorID ulid.ULID) error {
 }
 
 // SetOneMessageError implements the Bag interface of Ergo
-func (b *BadgerRepo) SetOneMessageError(errorID ulid.ULID, language language.Tag, message string) (*schema.UserMessage, error) {
+func (b *BadgerRepo) SetOneMessageError(errorID string, language language.Tag, message string) (*schema.UserMessage, error) {
 	txn := b.db.NewTransaction(true)
 	defer txn.Discard()
 

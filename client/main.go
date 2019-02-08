@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/k0kubun/pp"
+	"golang.org/x/text/language"
+
 	"github.com/bregydoc/ergo/schema"
 
 	"github.com/bregydoc/ergo"
@@ -50,38 +53,92 @@ func (ui *ErgoUI) LaunchUIClientForDevelopers(port string) error {
 		m.HandleRequest(c.Writer, c.Request)
 	})
 
-	ui.ergo.Repo.OnNewErrorHasBeenSaved(func(val *schema.ErrorInstance) {
-		instances, err := ui.ergo.Repo.GetAllErrorsForDev()
+	r.POST("/save-error", func(c *gin.Context) {
+		body := struct {
+			Explain  string `json:"explain"`
+			Language string `json:"language"`
+			Message  string `json:"message"`
+			Type     int    `json:"type"`
+			Where    string `json:"where"`
+		}{}
+
+		err := c.BindJSON(&body)
 		if err != nil {
 			fmt.Println("error 0x01", err)
+			return
+		}
+
+		if body.Language == "english" {
+			body.Language = "en"
+		} else if body.Language == "spanish" {
+			body.Language = "es"
+		} else if body.Language == "chinese" {
+			body.Language = "ch"
+		}
+
+		pp.Println(body)
+
+		l, err := language.Parse(body.Language)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		t := false
+		if body.Type > 0 {
+			t = true
+		}
+
+		inst, err := ui.ergo.RegisterNewError(body.Where, body.Explain, &ergo.UserMessage{
+			Language: l,
+			Message:  body.Message,
+		}, t)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, inst)
+	})
+
+	ui.ergo.Repo.OnNewErrorHasBeenSaved(func(val *schema.ErrorInstance) {
+		instances, err := ui.ergo.Repo.GetAllErrorsForUI()
+		if err != nil {
+			fmt.Println("error 0x01", err)
+			return
 		}
 
 		data, err := json.Marshal(instances)
 		if err != nil {
 			fmt.Println("error 0x02", err)
+			return
 		}
 
 		err = m.Broadcast(data)
 		if err != nil {
 			fmt.Println("error 0x03", err)
+			return
 		}
 	})
 
 	m.HandleConnect(func(s *melody.Session) {
 		fmt.Println("connected...", s.Keys)
-		instances, err := ui.ergo.Repo.GetAllErrorsForDev()
+		instances, err := ui.ergo.Repo.GetAllErrorsForUI()
 		if err != nil {
 			fmt.Println("error 0x01", err)
+			return
 		}
 
 		data, err := json.Marshal(instances)
 		if err != nil {
 			fmt.Println("error 0x02", err)
+			return
 		}
 
 		err = s.Write(data)
 		if err != nil {
 			fmt.Println("error 0x03", err)
+			return
 		}
 	})
 

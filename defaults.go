@@ -12,7 +12,7 @@ import (
 // }
 
 var unknownErrorForHumans = &schema.ErrorHuman{
-	Id:   []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	Id:   "00000000000000000000000000",
 	Type: schema.ErrorType_ONLY_READ,
 	Action: []*schema.Action{
 		{
@@ -30,7 +30,7 @@ var unknownErrorForHumans = &schema.ErrorHuman{
 }
 
 var unknownErrorForDevelopers = &schema.ErrorDev{
-	Id:       []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	Id:       "00000000000000000000000000",
 	Type:     schema.ErrorType_ONLY_READ,
 	Code:     uint64(100),
 	Explain:  "unknown error, ergo could not found",
@@ -40,7 +40,7 @@ var unknownErrorForDevelopers = &schema.ErrorDev{
 }
 
 var ergoIsNotWorkingForHumans = &schema.ErrorHuman{
-	Id:   []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	Id:   "FFFFFFFFFFFFFFFFFFFFFFFFFF",
 	Type: schema.ErrorType_ONLY_READ,
 	Action: []*schema.Action{
 		{

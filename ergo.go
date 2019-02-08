@@ -7,7 +7,6 @@ import (
 	"github.com/bregydoc/gtranslate"
 
 	"github.com/bregydoc/ergo/schema"
-	"github.com/oklog/ulid"
 	"golang.org/x/text/language"
 )
 
@@ -48,7 +47,23 @@ func (ergo *Ergo) RegisterNewError(where, explain string, message *UserMessage, 
 		},
 	}
 
-	return ergo.Repo.SaveNewError(creator)
+	instError, err := ergo.Repo.SaveNewError(creator)
+	if err != nil {
+		return nil, err
+	}
+
+	// Verify if message language is English
+	if message.Language.String() != language.English.String() { // If isn't
+		// Creating english user message for this error
+		engMessage, err := gtranslate.TranslateWithFromTo(message.Message, gtranslate.FromTo{From: "auto", To: "en"})
+		if err != nil {
+			engMessage = ""
+		}
+		ergo.Repo.SetOneMessageError(instError.Id, language.English, engMessage)
+
+	}
+
+	return instError, nil
 }
 
 // RegisterNewErrorWithCode implements Wizard interface
@@ -72,7 +87,23 @@ func (ergo *Ergo) RegisterNewErrorWithCode(where, explain string, code uint64, m
 		},
 	}
 
-	return ergo.Repo.SaveNewError(creator)
+	instError, err := ergo.Repo.SaveNewError(creator)
+	if err != nil {
+		return nil, err
+	}
+
+	// Verify if message language is English
+	if message.Language.String() != language.English.String() { // If isn't
+		// Creating english user message for this error
+		engMessage, err := gtranslate.TranslateWithFromTo(message.Message, gtranslate.FromTo{From: "auto", To: "en"})
+		if err != nil {
+			engMessage = ""
+		}
+		ergo.Repo.SetOneMessageError(instError.Id, language.English, engMessage)
+
+	}
+
+	return instError, nil
 }
 
 // RegisterFullError implements Wizard interface, then Ergo is a wizard, a wizard of your errors
@@ -81,10 +112,8 @@ func (ergo *Ergo) RegisterFullError(asDev *schema.ErrorDev, asHuman *schema.Erro
 }
 
 // ConsultErrorAsHumanByID implements Wizard interface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) ConsultErrorAsHumanByID(errorID []byte, languages ...language.Tag) (*schema.ErrorHuman, error) {
-	var id ulid.ULID
-	copy(id[:], errorID)
-	forHuman, err := ergo.Repo.GetErrorForHuman(id, languages...)
+func (ergo *Ergo) ConsultErrorAsHumanByID(errorID string, languages ...language.Tag) (*schema.ErrorHuman, error) {
+	forHuman, err := ergo.Repo.GetErrorForHuman(errorID, languages...)
 	if err != nil {
 		if strings.Contains(err.Error(), "found") {
 			return unknownErrorForHumans, nil
@@ -96,10 +125,8 @@ func (ergo *Ergo) ConsultErrorAsHumanByID(errorID []byte, languages ...language.
 }
 
 // ConsultErrorAsDeveloperByID implements Wizard interface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) ConsultErrorAsDeveloperByID(errorID []byte) (*schema.ErrorDev, error) {
-	var id ulid.ULID
-	copy(id[:], errorID)
-	forDev, err := ergo.Repo.GetErrorForDev(id)
+func (ergo *Ergo) ConsultErrorAsDeveloperByID(errorID string) (*schema.ErrorDev, error) {
+	forDev, err := ergo.Repo.GetErrorForDev(errorID)
 	if err != nil {
 		if strings.Contains(err.Error(), "found") {
 			return unknownErrorForDevelopers, nil
@@ -130,9 +157,7 @@ func (ergo *Ergo) ConsultErrorAsDeveloperByCode(code uint64) (*schema.ErrorDev, 
 }
 
 // MemorizeNewMessages implements Wizard interface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) MemorizeNewMessages(errorID []byte, withAutoTranslate bool, messages ...*UserMessage) ([]*schema.UserMessage, error) {
-	var id ulid.ULID
-	copy(id[:], errorID)
+func (ergo *Ergo) MemorizeNewMessages(errorID string, withAutoTranslate bool, messages ...*UserMessage) ([]*schema.UserMessage, error) {
 	responses := make([]*schema.UserMessage, 0)
 	var ergoError *schema.ErrorHuman
 
@@ -165,7 +190,7 @@ func (ergo *Ergo) MemorizeNewMessages(errorID []byte, withAutoTranslate bool, me
 			}
 		}
 
-		resp, err := ergo.Repo.SetOneMessageError(id, m.Language, message)
+		resp, err := ergo.Repo.SetOneMessageError(errorID, m.Language, message)
 		if err != nil {
 			return nil, err
 		}
@@ -176,8 +201,6 @@ func (ergo *Ergo) MemorizeNewMessages(errorID []byte, withAutoTranslate bool, me
 }
 
 // ReceiveFeedbackOfUser implements Wizard interface, then Ergo is a wizard, a wizard of your errors
-func (ergo *Ergo) ReceiveFeedbackOfUser(errorID []byte, feedback *UserFeedback) (*schema.Feedback, error) {
-	var id ulid.ULID
-	copy(id[:], errorID)
-	return ergo.Repo.AddFeedbackToUser(id, feedback)
+func (ergo *Ergo) ReceiveFeedbackOfUser(errorID string, feedback *UserFeedback) (*schema.Feedback, error) {
+	return ergo.Repo.AddFeedbackToUser(errorID, feedback)
 }

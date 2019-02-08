@@ -44,7 +44,7 @@ func (human *HumanBridge) LaunchServerForHumans(address string) error {
 		}
 		// If the id is correct
 		if err == nil {
-			forHuman, err := human.ergo.ConsultErrorAsHumanByID(id[:], langs...)
+			forHuman, err := human.ergo.ConsultErrorAsHumanByID(id.String(), langs...)
 			if err != nil {
 				c.JSON(http.StatusOK, ergoIsNotWorkingForHumans)
 				return
